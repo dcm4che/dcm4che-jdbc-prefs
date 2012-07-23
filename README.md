@@ -6,20 +6,14 @@ The dcm4che-jdbc-prefs project provides an extension to store java preferences i
 Library
 =======
 
-The library requires the system properties `java.util.prefs.PreferencesFactory` and `jdbc.backend.url` 
-to be set either in the code (example):
+The library requires the following system properties:
 
-```java
-System.setProperty("java.util.prefs.PreferencesFactory", "org.dcm4che.jdbc.prefs.PreferencesFactoryImpl");
-System.setProperty("jdbc.backend.url","jdbc:oracle:thin:prefs/prefs@localhost:1521:xe");
-```
-
-or as execution parameters (example):
-
-```
--Djdbc.backend.url=jdbc:oracle:thin:prefs/prefs@localhost:1521:xe 
--Djava.util.prefs.PreferencesFactory=org.dcm4che.jdbc.prefs.PreferencesFactoryImpl
-```
+* java.util.prefs.PreferencesFactory = org.dcm4che.jdbc.prefs.PreferencesFactoryImpl 
+  * Example: `-Djava.util.prefs.PreferencesFactory=org.dcm4che.jdbc.prefs.PreferencesFactoryImpl`
+* jdbc.backend.url
+  * Example: `-Djdbc.backend.url=jdbc:oracle:thin:@localhost:1521:xe`
+* jdbc.user.name
+* jdbc.user.pwd
 
 Tool
 ====
