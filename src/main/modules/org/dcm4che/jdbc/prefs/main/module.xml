@@ -7,6 +7,6 @@
     <dependencies>
         <module name="org.apache.log4j"/>
         <module name="javax.api"/>
-        <module name="com.oracle.ojdbc6"/>
+        <module name="org.jboss.as.jpa.hibernate"/>
     </dependencies>
 </module>

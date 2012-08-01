@@ -6,7 +6,20 @@
   <packaging>jar</packaging>
   <version>1.0.0-SNAPSHOT</version>
   <name>Java Preferences to JDBC Connection</name>
+  <properties>
+    <db>oracle</db>
+    <ds>jdbc:oracle:thin:@localhost:1521:xe</ds>
+    <hbm2ddl.auto>validate</hbm2ddl.auto>
+    <show_sql>true</show_sql>
+    <log4j.version>1.2.16</log4j.version>
+    <jpa.version>1.0.1.Final</jpa.version>
+    <dcm4che.version>3.0.0-SNAPSHOT</dcm4che.version>
+    <hibernate.version>4.0.1.Final</hibernate.version>
+  </properties>
   <build>
+    <filters>
+      <filter>src/main/filters/${db}.properties</filter>
+    </filters>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -17,13 +30,52 @@
           <encoding>ISO-8859-1</encoding>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.12</version>
+        <configuration>
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.1.1</version>
+        <executions>
+          <execution>
+            <id>generate-create-schema-ddl</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <includePluginDependencies>true</includePluginDependencies>
+              <mainClass>com.blogspot.doingenterprise.SchemaExport</mainClass>
+              <arguments>
+                <argument>--create</argument>
+                <argument>--delimiter=;</argument>
+                <argument>--output=${project.build.directory}/create-${db}.ddl</argument>
+                <argument>dcm4che-jdbc-prefs</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>com.blogspot.doingenterprise</groupId>
+            <artifactId>schema-export</artifactId>
+            <version>2012_05_01</version>
+          </dependency>
+        </dependencies>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
     <dependency>
-      <groupId>org.apache.directory.studio</groupId>
-      <artifactId>org.apache.logging.log4j</artifactId>
-      <version>1.2.16</version>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${log4j.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -33,10 +85,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.oracle</groupId>
-      <artifactId>ojdbc6</artifactId>
-      <version>11.2.0.2.0</version>
-      <scope>test</scope>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+      <version>${jpa.version}</version>
     </dependency>
   </dependencies>
   <profiles>
@@ -45,6 +96,17 @@
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
+      <build>
+        <resources>
+          <resource>
+            <directory>src/main/persistence/lib</directory>
+            <filtering>true</filtering>
+            <includes>
+              <include>**/*</include>
+            </includes>
+          </resource>
+        </resources>
+      </build>
     </profile>
     <profile>
       <id>tool</id>
@@ -55,7 +117,7 @@
             <version>2.3</version>
             <configuration>
               <descriptors>
-                <descriptor>src/main/assembly/lib.xml</descriptor>
+                <descriptor>src/main/assembly/tool.xml</descriptor>
               </descriptors>
             </configuration>
             <executions>
@@ -68,39 +130,94 @@
             </executions>
           </plugin>
         </plugins>
+        <resources>
+          <resource>
+            <directory>src/main/persistence/lib</directory>
+            <filtering>true</filtering>
+            <includes>
+              <include>**/*</include>
+            </includes>
+          </resource>
+        </resources>
       </build>
       <dependencies>
         <dependency>
-          <groupId>org.apache.directory.studio</groupId>
-          <artifactId>org.apache.logging.log4j</artifactId>
-          <version>1.2.16</version>
-        </dependency>
-        <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-          <version>1.6.4</version>
-        </dependency>
-        <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <version>4.10</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-          <version>1.6.4</version>
-        </dependency>
-        <dependency>
           <groupId>org.dcm4che.tool</groupId>
           <artifactId>dcm4che-tool-xml2prefs</artifactId>
-          <version>3.0.0-SNAPSHOT</version>
+          <version>${dcm4che.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.hibernate.javax.persistence</groupId>
+          <artifactId>hibernate-jpa-2.0-api</artifactId>
+          <version>${jpa.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+          <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-entitymanager</artifactId>
+          <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-core</artifactId>
+          <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.hibernate.common</groupId>
+          <artifactId>hibernate-commons-annotations</artifactId>
+          <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss.logging</groupId>
+          <artifactId>jboss-logging</artifactId>
+          <version>3.1.0.GA</version>
+        </dependency>
+        <dependency>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
+          <version>1.1</version>
+        </dependency>
+        <dependency>
+          <groupId>dom4j</groupId>
+          <artifactId>dom4j</artifactId>
+          <version>1.6.1</version>
+        </dependency>
+        <dependency>
+          <groupId>org.javassist</groupId>
+          <artifactId>javassist</artifactId>
+          <version>3.15.0-GA</version>
+        </dependency>
+        <dependency>
+          <groupId>commons-collections</groupId>
+          <artifactId>commons-collections</artifactId>
+          <version>3.2.1</version>
+        </dependency>
+        <dependency>
+          <groupId>antlr</groupId>
+          <artifactId>antlr</artifactId>
+          <version>2.7.7</version>
         </dependency>
       </dependencies>
     </profile>
     <profile>
       <id>module</id>
+      <properties>
+        <ds>java:/DicomPreferencesDS</ds>
+      </properties>
       <build>
+        <resources>
+          <resource>
+            <directory>src/main/persistence/module</directory>
+            <filtering>true</filtering>
+            <includes>
+              <include>**/*</include>
+            </includes>
+          </resource>
+        </resources>
         <finalName>dcm4che-jdbc-prefs-${project.version}-module</finalName>
         <plugins>
           <plugin>
@@ -128,6 +245,12 @@
           <groupId>org.dcm4che</groupId>
           <artifactId>dcm4che-jdbc-prefs</artifactId>
           <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.hibernate.javax.persistence</groupId>
+          <artifactId>hibernate-jpa-2.0-api</artifactId>
+          <version>${jpa.version}</version>
+          <scope>provided</scope>
         </dependency>
       </dependencies>
     </profile>
