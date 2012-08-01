@@ -49,6 +49,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Index;
+
 /**
  * @author Michael Backhaus <michael.backhaus@agfa.com>
  */
@@ -77,6 +79,7 @@ public class Attribute {
 
     @Basic(optional = false)
     @Column
+    @Index(name="attribute_key_idx")
     private String key;
 
     @Basic(optional = false)

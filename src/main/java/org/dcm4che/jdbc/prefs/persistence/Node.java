@@ -48,6 +48,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Index;
+
 /**
  * @author Michael Backhaus <michael.backhaus@agfa.com>
  */
@@ -71,6 +73,7 @@ public class Node {
     private int pk;
 
     @Basic(optional = false)
+    @Index(name="node_name_idx")
     private String name;
 
     @ManyToOne
