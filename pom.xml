@@ -206,7 +206,7 @@
     <profile>
       <id>module</id>
       <properties>
-        <ds>java:/DicomPreferencesDS</ds>
+        <ds>java:jboss/datasources/DicomPreferencesDS</ds>
       </properties>
       <build>
         <resources>

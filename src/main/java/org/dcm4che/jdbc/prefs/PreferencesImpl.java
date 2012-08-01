@@ -54,6 +54,7 @@ public class PreferencesImpl extends AbstractPreferences {
 
     private static final Logger LOG = Logger.getLogger(PreferencesImpl.class);
 
+    private PreferencesFactoryImpl preferencesFactoryImpl;
     private Node node = new Node();
     private HashMap<String, String> attributes;
     private HashMap<String, Node> childs;
@@ -61,7 +62,7 @@ public class PreferencesImpl extends AbstractPreferences {
     private HashMap<String, String> attributes() {
         if (attributes == null) {
             attributes = new HashMap<String, String>();
-            for (Attribute attr: PreferencesUpdateBean.getInstance().getAttributes(node))
+            for (Attribute attr: preferencesFactoryImpl.getAttributes(node))
                 attributes.put(attr.getKey(), attr.getValue());
         }
         return attributes;
@@ -70,25 +71,27 @@ public class PreferencesImpl extends AbstractPreferences {
     private HashMap<String, Node> childs() {
         if (childs == null) {
             childs = new HashMap<String, Node>();
-            for (Node child : PreferencesUpdateBean.getInstance().getChildren(node))
+            for (Node child : preferencesFactoryImpl.getChildren(node))
                 childs.put(child.getName(), child);
         }
         return childs;
     }
 
-    protected PreferencesImpl() {
+    public PreferencesImpl(PreferencesFactoryImpl preferencesFactoryImpl) {
         super(null, "");
-        node = PreferencesUpdateBean.getInstance().getNodeByName("rootNode");
+        this.preferencesFactoryImpl = preferencesFactoryImpl;
+        node = preferencesFactoryImpl.getNodeByName("rootNode");
         if (node.getPk() == 0) {
             LOG.debug("PreferencesImpl() - insert new rootNode");
             node.setName("rootNode");
             node.setParentNode(null);
-            PreferencesUpdateBean.getInstance().insertNode(node);
+            preferencesFactoryImpl.insertNode(node);
         }
     }
 
     public PreferencesImpl(PreferencesImpl parent, Node child) {
         super(parent, child.getName());
+        this.preferencesFactoryImpl = parent.preferencesFactoryImpl;
         node = child;
     }
 
@@ -101,7 +104,7 @@ public class PreferencesImpl extends AbstractPreferences {
             child = new Node();
             child.setName(name);
             child.setParentNode(node);
-            PreferencesUpdateBean.getInstance().insertNode(child);
+            preferencesFactoryImpl.insertNode(child);
             childs.put(child.getName(), child);
         }
         return new PreferencesImpl(this, child);
@@ -137,7 +140,7 @@ public class PreferencesImpl extends AbstractPreferences {
         attr.setKey(key);
         attr.setValue(value);
         attr.setNode(node);
-        PreferencesUpdateBean.getInstance().updateAttribute(attr);
+        preferencesFactoryImpl.updateAttribute(attr);
         attributes().remove(key);
         attributes().put(key, value);
     }
@@ -145,25 +148,25 @@ public class PreferencesImpl extends AbstractPreferences {
     @Override
     protected void removeNodeSpi() throws BackingStoreException {
         LOG.debug("removeNodeSpi() pk = " + node.getPk());
-        PreferencesUpdateBean.getInstance().removeNode(node);
+        preferencesFactoryImpl.removeNode(node);
         ((PreferencesImpl) parent()).childs().remove(name());
     }
 
     @Override
     protected void removeSpi(String key) {
         LOG.debug("removeSpi(String) - key = " + key);
-        PreferencesUpdateBean.getInstance().removeAttributeByKey(key, node);
+        preferencesFactoryImpl.removeAttributeByKey(key, node);
         attributes().remove(key);
     }
 
     @Override
     protected void flushSpi() throws BackingStoreException {
         LOG.debug("flushSpi()");
-        PreferencesUpdateBean.getInstance().flush();
+        preferencesFactoryImpl.flush();
     }
 
     @Override
     protected void syncSpi() throws BackingStoreException {
-        PreferencesUpdateBean.getInstance().refresh(node);
+        preferencesFactoryImpl.refresh(node);
     }
 }
