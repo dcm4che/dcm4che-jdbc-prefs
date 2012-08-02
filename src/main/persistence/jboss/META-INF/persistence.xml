@@ -11,7 +11,7 @@
       <property name="hibernate.show_sql" value="${show_sql}" />
       <property name="hibernate.jdbc.use_get_generated_keys" value="true" />
       <property name="hibernate.jdbc.fetch_size" value="20"/>
-      <property name="jboss.entity.manager.factory.jndi.name" value="java:jboss/myEntityManagerFactory" />
+      <property name="jboss.entity.manager.factory.jndi.name" value="java:jboss/JdbcPrefsEntityManagerFactory" />
     </properties>
   </persistence-unit>
 </persistence>
