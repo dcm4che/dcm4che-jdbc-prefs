@@ -58,7 +58,7 @@ CP="$CP:$DCM4CHE_HOME/lib/antlr-2.7.7.jar"
 CP="$CP:$DCM4CHE_HOME/lib/ojdbc6.jar"
 
 # Setup jdbc preferences
-PREFS="-Djava.util.prefs.PreferencesFactory=org.dcm4che.jdbc.prefs.PreferencesFactoryImpl"
+PREFS="-Djava.util.prefs.PreferencesFactory=org.dcm4che.jdbc.prefs.PreferencesFactoryJDBCImpl"
 
 # Setup JDBC connection properties
 JDBC=" -Djdbc.prefs.datasource=jdbc:oracle:thin:@localhost:1521:xe "

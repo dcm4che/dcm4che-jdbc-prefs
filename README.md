@@ -28,14 +28,14 @@ Tool
 
 The tool `xmlPrefs2jdbc` provides a vehicle to import XML preferences into a database.
 
-JBoss 7 Module
-==============
+JBoss 7 Web-App
+===============
 
-The JBoss 7 Module can be unpacked into the JBoss 7 modules folder.
+The web-app can be deployed in an application server. It requires a mapping to a configured datasource (SAA).
 
 BUILD
 =====
 
 * Library: `mvn install [-P lib]`
 * Tool: `mvn install -P tool`
-* Module: `mvn install -P module`
+* Web-App: `mvn install -P jboss`

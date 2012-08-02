@@ -60,7 +60,7 @@ REM jdbc driver
 set CP=%CP%;%DCM4CHE_HOME%\lib\ojdbc6.jar"
 
 # Setup jdbc preferences
-set PREFS="-Djava.util.prefs.PreferencesFactory=org.dcm4che.jdbc.prefs.PreferencesFactoryImpl"
+set PREFS="-Djava.util.prefs.PreferencesFactory=org.dcm4che.jdbc.prefs.PreferencesFactoryJDBCImpl"
 
 # Setup jdbc connection properties
 set JDBC=-Djdbc.prefs.datasource=jdbc:oracle:thin:@localhost:1521:xe

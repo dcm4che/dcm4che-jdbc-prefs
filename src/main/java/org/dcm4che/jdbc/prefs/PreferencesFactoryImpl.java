@@ -38,18 +38,15 @@
 
 package org.dcm4che.jdbc.prefs;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.prefs.Preferences;
 import java.util.prefs.PreferencesFactory;
 
-import javax.annotation.PreDestroy;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
-import javax.persistence.PreRemove;
 
 import org.apache.log4j.Logger;
 import org.dcm4che.jdbc.prefs.persistence.Attribute;
@@ -62,15 +59,39 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
 
     private Preferences rootPreferences;
 
-    private static final Logger LOG = Logger.getLogger(PreferencesFactoryImpl.class);
+    protected static final Logger LOG = Logger.getLogger(PreferencesFactoryImpl.class);
+
+    EntityManager em;
+
+    public PreferencesFactoryImpl(){
+            this(lookupEntityManagerFactory());
+    }
     
-    private EntityManager em;
+    private static EntityManagerFactory lookupEntityManagerFactory() {
+        try {
+            return (EntityManagerFactory) new InitialContext().lookup("java:jboss/JdbcPrefsEntityManagerFactory");
+        } catch (NamingException e) {
+            throw new RuntimeException("Error in JNDI lookup of persistence unit", e);
+        }
+    }
+    
+    protected PreferencesFactoryImpl(EntityManagerFactory emf) {
+        this.em = emf.createEntityManager();
+    }
 
     @Override
     public Preferences systemRoot() {
         if (rootPreferences == null) {
-            createEntityManager();
-            rootPreferences = new PreferencesImpl(this);
+            String datasource = System.getProperty("jdbc.prefs.datasource");
+            if (datasource == null)
+                throw new RuntimeException("Missing system property 'jdbc.prefs.datasource'");
+
+            if (datasource.startsWith("jdbc:"))
+                rootPreferences = new PreferencesImpl(new PreferencesFactoryJDBCImpl());
+            else if (datasource.startsWith("java:"))
+                rootPreferences = new PreferencesImpl(this);
+            else
+                throw new RuntimeException("Unsupported datasource: " + datasource);
         }
         return rootPreferences;
     }
@@ -80,58 +101,24 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
         return systemRoot();
     }
 
-    public void createEntityManager() {
-        String datasource = System.getProperty("jdbc.prefs.datasource");
-        if (datasource == null)
-            throw new RuntimeException("Missing system property 'jdbc.prefs.datasource'");
-        
-        Map<String, String> properties = new HashMap<String, String>();
-        if (datasource.startsWith("jdbc:"))
-            setJdbcProperties(properties);
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("dcm4che-jdbc-prefs", properties);
-        this.em = emf.createEntityManager();
-    }
-
-    private void setJdbcProperties(Map<String, String> properties) {
-        String username = System.getProperty("jdbc.prefs.connection.username");
-        if (username == null)
-            throw new RuntimeException("Missing system property 'jdbc.prefs.connection.username'");
-        
-        String password = System.getProperty("jdbc.prefs.connection.password");
-        if (password == null)
-            throw new RuntimeException("Missing system property 'jdbc.prefs.connection.password'");
-        
-        properties.put("hibernate.connection.username", username);
-        properties.put("hibernate.connection.password", password);
-    }
-
     public void insertNode(Node node) {
-        em.getTransaction().begin();
         em.persist(node);
-        em.getTransaction().commit();
     }
 
     public void removeNode(Node node) {
-        em.getTransaction().begin();
         em.createNamedQuery(Attribute.DELETE_BY_NODE).setParameter(1, node).executeUpdate();
         em.remove(node);
-        em.getTransaction().commit();
     }
 
     public void updateAttribute(Attribute attribute) {
-        em.getTransaction().begin();
         em.persist(attribute);
-        em.getTransaction().commit();
     }
 
     public void removeAttributeByKey(String key, Node node) {
-        em.getTransaction().begin();
         em.createNamedQuery(Attribute.DELETE_BY_KEY).setParameter(1, key).setParameter(2, node).executeUpdate();
-        em.getTransaction().commit();
     }
 
     public Node getNodeByName(String name) {
-        em.getTransaction().begin();
         try {
             Node result = em.createNamedQuery(Node.GET_NODE_BY_NAME, Node.class).setParameter(1, name)
                     .getSingleResult();
@@ -140,31 +127,23 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
             return new Node();
         } catch (Exception e) {
             throw new RuntimeException(e);
-        } finally {
-            em.getTransaction().commit();
         }
     }
 
     public List<Node> getChildren(Node parent) {
-        em.getTransaction().begin();
         List<Node> result = em.createNamedQuery(Node.GET_CHILDREN, Node.class).setParameter(1, parent).getResultList();
-        em.getTransaction().commit();
         return result;
     }
 
     public List<Attribute> getAttributes(Node parent) {
-        em.getTransaction().begin();
         List<Attribute> result = em.createNamedQuery(Attribute.GET_ATTRIBUTE_BY_PARENT_NODE, Attribute.class)
                 .setParameter(1, parent).getResultList();
-        em.getTransaction().commit();
         return result;
     }
 
     public void flush() {
         try {
-            em.getTransaction().begin();
             em.flush();
-            em.getTransaction().commit();
         } catch (Exception e) {
             LOG.debug(e);
         }
@@ -172,17 +151,5 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
 
     public void refresh(Node node) {
         em.refresh(node);
-    }
-
-    @PreRemove
-    public void closePreRemove(){
-        if (em.isOpen())
-            em.close();
-    }
-    
-    @PreDestroy
-    public void closePreDestry(){
-        if (em.isOpen())
-            em.close();
     }
 }

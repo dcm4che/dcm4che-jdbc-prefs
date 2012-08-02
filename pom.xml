@@ -39,6 +39,17 @@
         </configuration>
       </plugin>
       <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <classifier>${project-classifier}</classifier>
+         <archive>
+          <manifestEntries>
+            <Dependencies>org.hibernate</Dependencies>
+          </manifestEntries>
+         </archive>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.1.1</version>
@@ -100,6 +111,9 @@
   <profiles>
     <profile>
       <id>lib</id>
+      <properties>
+        <project-classifier>lib</project-classifier>
+      </properties>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
@@ -211,55 +225,23 @@
       </dependencies>
     </profile>
     <profile>
-      <id>module</id>
+      <id>jboss</id>
       <properties>
         <ds>java:jboss/datasources/DicomPreferencesDS</ds>
+        <project-classifier>jboss</project-classifier>
       </properties>
       <build>
         <resources>
           <resource>
-            <directory>src/main/persistence/module</directory>
+            <directory>src/main/persistence/jboss</directory>
             <filtering>true</filtering>
             <includes>
               <include>**/*</include>
             </includes>
           </resource>
         </resources>
-        <finalName>dcm4che-jdbc-prefs-${project.version}-module</finalName>
-        <plugins>
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>2.3</version>
-            <configuration>
-              <appendAssemblyId>false</appendAssemblyId>
-              <descriptors>
-                <descriptor>src/main/assembly/module.xml</descriptor>
-              </descriptors>
-            </configuration>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
+        <plugins></plugins>
       </build>
-      <dependencies>
-        <dependency>
-          <groupId>org.dcm4che</groupId>
-          <artifactId>dcm4che-jdbc-prefs</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.hibernate.javax.persistence</groupId>
-          <artifactId>hibernate-jpa-2.0-api</artifactId>
-          <version>${jpa.version}</version>
-          <scope>provided</scope>
-        </dependency>
-      </dependencies>
     </profile>
   </profiles>
 </project>
