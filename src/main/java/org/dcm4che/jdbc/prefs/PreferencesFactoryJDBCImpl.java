@@ -54,11 +54,6 @@ import org.dcm4che.jdbc.prefs.persistence.Node;
  */
 public class PreferencesFactoryJDBCImpl extends PreferencesFactoryImpl {
 
-    public PreferencesFactoryJDBCImpl(){
-        super(createEntityManagerFactory());
-        
-    }
-
     public static EntityManagerFactory createEntityManagerFactory() {
         String username = System.getProperty("jdbc.prefs.connection.username");
         if (username == null)

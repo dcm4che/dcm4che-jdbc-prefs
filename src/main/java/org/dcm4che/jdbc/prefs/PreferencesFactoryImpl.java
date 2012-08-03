@@ -63,20 +63,31 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
 
     EntityManager em;
 
-    public PreferencesFactoryImpl(){
-            this(lookupEntityManagerFactory());
+    private static EntityManagerFactory lookupEntityManagerFactory() throws InterruptedException {
+        EntityManagerFactory emf = null;
+        int counter = getCounter();
+        while (emf == null)
+            try {
+                emf = (EntityManagerFactory) new InitialContext().lookup("java:jboss/JdbcPrefsEntityManagerFactory");
+            } catch (NamingException e) {
+                if (counter == 0)
+                    throw new RuntimeException(e);
+                else {
+                    LOG.error("Waiting for JNDI lookup of java:jboss/JdbcPrefsEntityManagerFactory ... " + counter);
+                    counter--;
+                    Thread.sleep(1000);
+                }
+            }
+        return emf;
     }
-    
-    private static EntityManagerFactory lookupEntityManagerFactory() {
+
+    private static int getCounter() {
         try {
-            return (EntityManagerFactory) new InitialContext().lookup("java:jboss/JdbcPrefsEntityManagerFactory");
-        } catch (NamingException e) {
-            throw new RuntimeException("Error in JNDI lookup of persistence unit", e);
+            String counterString = System.getProperty("jdbc.prefs.jndi.counter");
+            return (counterString == null) ? 30 : Integer.parseInt(counterString);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException(e);
         }
-    }
-    
-    protected PreferencesFactoryImpl(EntityManagerFactory emf) {
-        this.em = emf.createEntityManager();
     }
 
     @Override
@@ -86,11 +97,17 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
             if (datasource == null)
                 throw new RuntimeException("Missing system property 'jdbc.prefs.datasource'");
 
-            if (datasource.startsWith("jdbc:"))
+            if (datasource.startsWith("jdbc:")) {
+                em = PreferencesFactoryJDBCImpl.createEntityManagerFactory().createEntityManager();
                 rootPreferences = new PreferencesImpl(new PreferencesFactoryJDBCImpl());
-            else if (datasource.startsWith("java:"))
-                rootPreferences = new PreferencesImpl(this);
-            else
+            } else if (datasource.startsWith("java:")) {
+                try {
+                    em = lookupEntityManagerFactory().createEntityManager();
+                    rootPreferences = new PreferencesImpl(this);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            } else
                 throw new RuntimeException("Unsupported datasource: " + datasource);
         }
         return rootPreferences;
@@ -145,7 +162,7 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
         try {
             em.flush();
         } catch (Exception e) {
-            LOG.debug(e);
+            LOG.error(e);
         }
     }
 
