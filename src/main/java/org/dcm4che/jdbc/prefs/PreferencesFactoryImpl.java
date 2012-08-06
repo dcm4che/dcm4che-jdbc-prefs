@@ -63,6 +63,10 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
 
     EntityManager em;
 
+    protected PreferencesFactoryImpl(EntityManagerFactory emf) {
+        this.em = emf.createEntityManager();
+    }
+
     private static EntityManagerFactory lookupEntityManagerFactory() throws InterruptedException {
         EntityManagerFactory emf = null;
         int counter = getCounter();
@@ -98,7 +102,6 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
                 throw new RuntimeException("Missing system property 'jdbc.prefs.datasource'");
 
             if (datasource.startsWith("jdbc:")) {
-                em = PreferencesFactoryJDBCImpl.createEntityManagerFactory().createEntityManager();
                 rootPreferences = new PreferencesImpl(new PreferencesFactoryJDBCImpl());
             } else if (datasource.startsWith("java:")) {
                 try {
