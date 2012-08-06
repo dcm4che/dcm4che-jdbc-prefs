@@ -8,12 +8,13 @@ Library
 
 The library requires the following system properties:
 
-* java.util.prefs.PreferencesFactory = org.dcm4che.jdbc.prefs.PreferencesFactoryImpl 
+* java.util.prefs.PreferencesFactoryl 
+    * Values: org.dcm4che.jdbc.prefs.PreferencesFactoryImpl (e.g. for JBoss JNDI lookup) or org.dcm4che.jdbc.prefs.PreferencesFactoryJDBCImpl (e.g. for command line tool JDBC initalization)
     * Example: 
-        * command line: `-Djava.util.prefs.PreferencesFactory=org.dcm4che.jdbc.prefs.PreferencesFactoryImpl`
+        * command line: `-Djava.util.prefs.PreferencesFactory=org.dcm4che.jdbc.prefs.PreferencesFactoryJDBCImpl`
         * JBoss7:
             * edit container configuration (e.g. `standalone/configuration/standalone.xml`)
-            * find node `<system-properties>`
+            * find node `<system-properties>` (if not present create `<system-properties></system-properties>` as child under root node `<server xmlns="urn:jboss:domain:1.2">`)
             * add new child node `<property name="java.util.prefs.PreferencesFactory" value="org.dcm4che.jdbc.prefs.PreferencesFactoryImpl"/>`
 * jdbc.prefs.datasource
     * Example: 
@@ -22,6 +23,7 @@ The library requires the following system properties:
         * note: value can be a JNDI name (starting with "java:") or a connection URL (starting with "jdbc:")
 * jdbc.prefs.connection.username (only required for Library and Tool)
 * jdbc.prefs.connection.password (SAA)
+* jdbc.prefs.jndi.timeout (time in seconds, used in JBoss web-app, default value: 30)
 
 Tool
 ====
