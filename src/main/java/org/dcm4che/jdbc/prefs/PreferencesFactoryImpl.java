@@ -63,13 +63,17 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
 
     EntityManager em;
 
+    public PreferencesFactoryImpl() throws InterruptedException {
+        this(lookupEntityManagerFactory());
+    }
+
     protected PreferencesFactoryImpl(EntityManagerFactory emf) {
         this.em = emf.createEntityManager();
     }
 
     private static EntityManagerFactory lookupEntityManagerFactory() throws InterruptedException {
         EntityManagerFactory emf = null;
-        int counter = getCounter();
+        int counter = getJndiTimeout();
         while (emf == null)
             try {
                 emf = (EntityManagerFactory) new InitialContext().lookup("java:jboss/JdbcPrefsEntityManagerFactory");
@@ -85,9 +89,9 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
         return emf;
     }
 
-    private static int getCounter() {
+    private static int getJndiTimeout() {
         try {
-            String counterString = System.getProperty("jdbc.prefs.jndi.counter");
+            String counterString = System.getProperty("jdbc.prefs.jndi.timeout");
             return (counterString == null) ? 30 : Integer.parseInt(counterString);
         } catch (NumberFormatException e) {
             throw new RuntimeException(e);
@@ -101,16 +105,11 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
             if (datasource == null)
                 throw new RuntimeException("Missing system property 'jdbc.prefs.datasource'");
 
-            if (datasource.startsWith("jdbc:")) {
+            if (datasource.startsWith("jdbc:"))
                 rootPreferences = new PreferencesImpl(new PreferencesFactoryJDBCImpl());
-            } else if (datasource.startsWith("java:")) {
-                try {
-                    em = lookupEntityManagerFactory().createEntityManager();
-                    rootPreferences = new PreferencesImpl(this);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            } else
+            else if (datasource.startsWith("java:"))
+                rootPreferences = new PreferencesImpl(this);
+            else
                 throw new RuntimeException("Unsupported datasource: " + datasource);
         }
         return rootPreferences;
