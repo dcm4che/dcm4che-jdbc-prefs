@@ -127,15 +127,6 @@ public class PreferencesFactoryJDBCImpl extends PreferencesFactoryImpl {
     }
 
     @Override
-    public List<Attribute> getAttributes(Node parent) {
-        em.getTransaction().begin();
-        List<Attribute> result = em.createNamedQuery(Attribute.GET_ATTRIBUTE_BY_PARENT_NODE, Attribute.class)
-                .setParameter(1, parent).getResultList();
-        em.getTransaction().commit();
-        return result;
-    }
-
-    @Override
     public void flush() {
         try {
             em.getTransaction().begin();

@@ -43,7 +43,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -60,10 +59,7 @@ import org.hibernate.annotations.Index;
             query = "DELETE FROM Attribute attr WHERE attr.key = ?1 and attr.node = ?2"),
     @NamedQuery(
             name = "Attribute.deleteByNode",
-            query = "DELETE FROM Attribute a WHERE a.node = ?1"),
-    @NamedQuery(
-            name = "Attribute.getAttributesByParentNode",
-            query = "SELECT a FROM Attribute a WHERE a.node = ?1")
+            query = "DELETE FROM Attribute a WHERE a.node = ?1")
 })
 @Entity
 @Table(name = "attribute")
@@ -71,7 +67,6 @@ public class Attribute {
 
     public static final String DELETE_BY_KEY = "Attribute.deleteByKey";
     public static final String DELETE_BY_NODE = "Attribute.deleteByNode";
-    public static final String GET_ATTRIBUTE_BY_PARENT_NODE = "Attribute.getAttributesByParentNode";
 
     @Id
     @GeneratedValue
@@ -87,7 +82,6 @@ public class Attribute {
     private String value;
 
     @ManyToOne
-    @JoinColumn(name = "node_fk")
     private Node node;
 
     public int getPk() {

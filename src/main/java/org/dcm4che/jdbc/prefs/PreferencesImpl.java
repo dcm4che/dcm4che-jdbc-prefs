@@ -62,7 +62,7 @@ public class PreferencesImpl extends AbstractPreferences {
     private HashMap<String, String> attributes() {
         if (attributes == null) {
             attributes = new HashMap<String, String>();
-            for (Attribute attr: preferencesFactoryImpl.getAttributes(node))
+            for (Attribute attr: node.getAttributes())
                 attributes.put(attr.getKey(), attr.getValue());
         }
         return attributes;

@@ -155,12 +155,6 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
         return result;
     }
 
-    public List<Attribute> getAttributes(Node parent) {
-        List<Attribute> result = em.createNamedQuery(Attribute.GET_ATTRIBUTE_BY_PARENT_NODE, Attribute.class)
-                .setParameter(1, parent).getResultList();
-        return result;
-    }
-
     public void flush() {
         try {
             em.flush();
