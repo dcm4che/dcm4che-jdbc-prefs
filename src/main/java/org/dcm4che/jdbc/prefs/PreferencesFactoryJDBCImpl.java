@@ -83,13 +83,12 @@ public class PreferencesFactoryJDBCImpl extends PreferencesFactoryImpl {
     @Override
     public void removeNode(Node node) {
         em.getTransaction().begin();
-        em.createNamedQuery(Attribute.DELETE_BY_NODE).setParameter(1, node).executeUpdate();
         em.remove(node);
         em.getTransaction().commit();
     }
 
     @Override
-    public void updateAttribute(Attribute attribute) {
+    public void insertAttribute(Attribute attribute) {
         em.getTransaction().begin();
         em.persist(attribute);
         em.getTransaction().commit();
@@ -98,17 +97,16 @@ public class PreferencesFactoryJDBCImpl extends PreferencesFactoryImpl {
     @Override
     public void removeAttributeByKey(String key, Node node) {
         em.getTransaction().begin();
-        em.createNamedQuery(Attribute.DELETE_BY_KEY).setParameter(1, key).setParameter(2, node).executeUpdate();
+        em.createNamedQuery(Attribute.DELETE_BY_KEY_AND_NODE_PK).setParameter("key", key)
+                .setParameter("nodePK", node.getPk()).executeUpdate();
         em.getTransaction().commit();
     }
 
     @Override
-    public Node getNodeByName(String name) {
+    public Node getRootNode() {
         em.getTransaction().begin();
         try {
-            Node result = em.createNamedQuery(Node.GET_NODE_BY_NAME, Node.class).setParameter(1, name)
-                    .getSingleResult();
-            return result;
+            return em.createNamedQuery(Node.GET_ROOT_NODE, Node.class).getSingleResult();
         } catch (NoResultException e) {
             return new Node();
         } catch (Exception e) {

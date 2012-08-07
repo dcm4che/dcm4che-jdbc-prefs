@@ -80,7 +80,7 @@ public class PreferencesImpl extends AbstractPreferences {
     public PreferencesImpl(PreferencesFactoryImpl preferencesFactoryImpl) {
         super(null, "");
         this.preferencesFactoryImpl = preferencesFactoryImpl;
-        node = preferencesFactoryImpl.getNodeByName("rootNode");
+        node = preferencesFactoryImpl.getRootNode();
         if (node.getPk() == 0) {
             LOG.debug("PreferencesImpl() - insert new rootNode");
             node.setName("rootNode");
@@ -140,8 +140,9 @@ public class PreferencesImpl extends AbstractPreferences {
         attr.setKey(key);
         attr.setValue(value);
         attr.setNode(node);
-        preferencesFactoryImpl.updateAttribute(attr);
-        attributes().remove(key);
+//        preferencesFactoryImpl.removeAttributeByKey(key, node);
+        preferencesFactoryImpl.insertAttribute(attr);
+//        attributes().remove(key);
         attributes().put(key, value);
     }
 

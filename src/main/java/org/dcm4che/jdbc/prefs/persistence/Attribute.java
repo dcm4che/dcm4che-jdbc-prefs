@@ -55,18 +55,18 @@ import org.hibernate.annotations.Index;
  */
 @NamedQueries({
     @NamedQuery(
-            name = "Attribute.deleteByKey",
-            query = "DELETE FROM Attribute attr WHERE attr.key = ?1 and attr.node = ?2"),
+            name = "Attribute.deleteByKeyAndNodePK",
+            query = "DELETE FROM Attribute attr WHERE attr.key = :key and attr.node.pk = :nodePK"),
     @NamedQuery(
-            name = "Attribute.deleteByNode",
-            query = "DELETE FROM Attribute a WHERE a.node = ?1")
+            name = "Attribute.getAttributesByNodePK",
+            query = "SELECT attr FROM Attribute attr WHERE attr.node.pk = :nodePK")
 })
 @Entity
 @Table(name = "attribute")
 public class Attribute {
 
-    public static final String DELETE_BY_KEY = "Attribute.deleteByKey";
-    public static final String DELETE_BY_NODE = "Attribute.deleteByNode";
+    public static final String DELETE_BY_KEY_AND_NODE_PK = "Attribute.deleteByKeyAndNodePK";
+    public static final String SELECT_BY_NODE_PK = "Attribute.getAttributesByNodePK";
 
     @Id
     @GeneratedValue

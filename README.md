@@ -35,7 +35,7 @@ JBoss 7 Web-App
 
 The web-app can be deployed in an application server. It requires a mapping to a configured datasource (SAA).
 
-BUILD
+Build
 =====
 
 * Library: `mvn install [-P lib]`

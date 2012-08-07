@@ -62,15 +62,15 @@ import org.hibernate.annotations.Index;
             name = "Node.getChildren",
             query = "SELECT n from Node n where n.parentNode = ?1"),
     @NamedQuery(
-            name = "Node.getNodeByName",
-            query = "SELECT n from Node n where n.name = ?1")
+            name = "Node.getRootNode",
+            query = "SELECT n from Node n where n.name = 'rootNode'")
 })
 @Entity
 @Table(name = "node")
 public class Node {
 
     public static final String GET_CHILDREN = "Node.getChildren";
-    public static final String GET_NODE_BY_NAME = "Node.getNodeByName";
+    public static final String GET_ROOT_NODE = "Node.getRootNode";
 
     @Id
     @GeneratedValue
@@ -84,7 +84,7 @@ public class Node {
     @JoinColumn(name = "parent_pk")
     private Node parentNode;
 
-    @OneToMany(mappedBy = "node")
+    @OneToMany(mappedBy = "node", orphanRemoval = true)
     private Collection<Attribute> attributes = new HashSet<Attribute>();
 
     public int getPk() {

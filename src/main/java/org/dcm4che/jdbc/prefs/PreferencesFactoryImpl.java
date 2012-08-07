@@ -47,6 +47,8 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Logger;
 import org.dcm4che.jdbc.prefs.persistence.Attribute;
@@ -62,6 +64,7 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
     protected static final Logger LOG = Logger.getLogger(PreferencesFactoryImpl.class);
 
     EntityManager em;
+    static UserTransaction utm;
 
     public PreferencesFactoryImpl() throws InterruptedException {
         this(lookupEntityManagerFactory());
@@ -77,11 +80,12 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
         while (emf == null)
             try {
                 emf = (EntityManagerFactory) new InitialContext().lookup("java:jboss/JdbcPrefsEntityManagerFactory");
+                utm = (UserTransaction) new InitialContext().lookup("java:jboss/UserTransaction");
             } catch (NamingException e) {
                 if (counter == 0)
                     throw new RuntimeException(e);
                 else {
-                    LOG.error("Waiting for JNDI lookup of java:jboss/JdbcPrefsEntityManagerFactory ... " + counter);
+                    LOG.error("Waiting for JNDI lookup ... " + counter);
                     counter--;
                     Thread.sleep(1000);
                 }
@@ -121,27 +125,78 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
     }
 
     public void insertNode(Node node) {
-        em.persist(node);
+        try {
+            utm.begin();
+            em.joinTransaction();
+            em.persist(node);
+            utm.commit();
+        } catch (Exception e) {
+            LOG.error(e);
+            try {
+                utm.rollback();
+            } catch (SystemException sysex) {
+                throw new RuntimeException(sysex);
+            }
+        }
     }
 
     public void removeNode(Node node) {
-        em.createNamedQuery(Attribute.DELETE_BY_NODE).setParameter(1, node).executeUpdate();
-        em.remove(node);
+        try {
+            utm.begin();
+            em.joinTransaction();
+//            @SuppressWarnings("unchecked")
+//            List<Attribute> attrs = em.createNamedQuery(Attribute.SELECT_BY_NODE_PK)
+//                    .setParameter("nodePK", node.getPk()).getResultList();
+//            for (Attribute attr : attrs)
+//                em.remove(attr);
+            em.remove(node);
+            utm.commit();
+        } catch (Exception e) {
+            LOG.error(e);
+            try {
+                utm.rollback();
+            } catch (SystemException sysex) {
+                throw new RuntimeException(sysex);
+            }
+        }
     }
 
-    public void updateAttribute(Attribute attribute) {
-        em.persist(attribute);
+    public void insertAttribute(Attribute attribute) {
+        try {
+            utm.begin();
+            em.joinTransaction();
+            em.persist(attribute);
+            utm.commit();
+        } catch (Exception e) {
+            LOG.error(e);
+            try {
+                utm.rollback();
+            } catch (SystemException sysex) {
+                throw new RuntimeException(sysex);
+            }
+        }
     }
 
     public void removeAttributeByKey(String key, Node node) {
-        em.createNamedQuery(Attribute.DELETE_BY_KEY).setParameter(1, key).setParameter(2, node).executeUpdate();
+        try {
+            utm.begin();
+            em.joinTransaction();
+            em.createNamedQuery(Attribute.DELETE_BY_KEY_AND_NODE_PK).setParameter("key", key)
+                    .setParameter("nodePK", node.getPk()).executeUpdate();
+            utm.commit();
+        } catch (Exception e) {
+            LOG.error(e);
+            try {
+                utm.rollback();
+            } catch (SystemException sysex) {
+                throw new RuntimeException(sysex);
+            }
+        }
     }
 
-    public Node getNodeByName(String name) {
+    public Node getRootNode() {
         try {
-            Node result = em.createNamedQuery(Node.GET_NODE_BY_NAME, Node.class).setParameter(1, name)
-                    .getSingleResult();
-            return result;
+            return (Node) em.createNamedQuery(Node.GET_ROOT_NODE).getSingleResult();
         } catch (NoResultException e) {
             return new Node();
         } catch (Exception e) {
@@ -150,15 +205,22 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
     }
 
     public List<Node> getChildren(Node parent) {
-        List<Node> result = em.createNamedQuery(Node.GET_CHILDREN, Node.class).setParameter(1, parent).getResultList();
-        return result;
+        return em.createNamedQuery(Node.GET_CHILDREN, Node.class).setParameter(1, parent).getResultList();
     }
 
     public void flush() {
         try {
+            utm.begin();
+            em.joinTransaction();
             em.flush();
+            utm.commit();
         } catch (Exception e) {
             LOG.error(e);
+            try {
+                utm.rollback();
+            } catch (SystemException sysex) {
+                throw new RuntimeException(sysex);
+            }
         }
     }
 
