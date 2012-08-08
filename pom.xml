@@ -40,6 +40,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
+        <version>2.3.2</version>
         <configuration>
           <classifier>${project-classifier}</classifier>
          <archive>
@@ -153,7 +154,7 @@
         </plugins>
         <resources>
           <resource>
-            <directory>src/main/persistence/lib</directory>
+            <directory>src/main/persistence/tool</directory>
             <filtering>true</filtering>
             <includes>
               <include>**/*</include>

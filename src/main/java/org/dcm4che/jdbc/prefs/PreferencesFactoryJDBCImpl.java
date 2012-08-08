@@ -59,6 +59,10 @@ public class PreferencesFactoryJDBCImpl extends PreferencesFactoryImpl {
     }
 
     public static EntityManagerFactory createEntityManagerFactory() {
+        String connectionUrl = System.getProperty("jdbc.prefs.datasource");
+        if (connectionUrl == null)
+            throw new RuntimeException("Missing system property 'jdbc.prefs.datasource'");
+
         String username = System.getProperty("jdbc.prefs.connection.username");
         if (username == null)
             throw new RuntimeException("Missing system property 'jdbc.prefs.connection.username'");
@@ -68,6 +72,7 @@ public class PreferencesFactoryJDBCImpl extends PreferencesFactoryImpl {
             throw new RuntimeException("Missing system property 'jdbc.prefs.connection.password'");
 
         Map<String, String> properties = new HashMap<String, String>();
+        properties.put("hibernate.connection.url", connectionUrl);
         properties.put("hibernate.connection.username", username);
         properties.put("hibernate.connection.password", password);
         return Persistence.createEntityManagerFactory("dcm4che-jdbc-prefs", properties);

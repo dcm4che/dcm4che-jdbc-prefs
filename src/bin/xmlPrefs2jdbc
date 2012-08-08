@@ -57,13 +57,13 @@ CP="$CP:$DCM4CHE_HOME/lib/antlr-2.7.7.jar"
 # JDCB Driver
 CP="$CP:$DCM4CHE_HOME/lib/ojdbc6.jar"
 
-# Setup jdbc preferences
+# JDBC preferences
 PREFS="-Djava.util.prefs.PreferencesFactory=org.dcm4che.jdbc.prefs.PreferencesFactoryJDBCImpl"
 
-# Setup JDBC connection properties
-JDBC=" -Djdbc.prefs.datasource=jdbc:oracle:thin:@localhost:1521:xe "
-JDBC=" $JDBC -Djdbc.prefs.connection.username=prefs "
-JDBC=" $JDBC -Djdbc.prefs.connection.password=prefs "
+# JDBC connection properties
+JDBC="-Djdbc.prefs.datasource=jdbc:oracle:thin:@localhost:1521:xe"
+JDBC="$JDBC -Djdbc.prefs.connection.username=prefs"
+JDBC="$JDBC -Djdbc.prefs.connection.password=prefs"
 
 # For Cygwin, switch paths to Windows format before running java
 if $cygwin; then
