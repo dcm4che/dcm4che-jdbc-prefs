@@ -132,6 +132,9 @@
     </profile>
     <profile>
       <id>tool</id>
+      <properties>
+        <show_sql>true</show_sql>
+      </properties>
       <build>
         <plugins>
           <plugin>
