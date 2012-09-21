@@ -144,11 +144,6 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
         try {
             utm.begin();
             em.joinTransaction();
-//            @SuppressWarnings("unchecked")
-//            List<Attribute> attrs = em.createNamedQuery(Attribute.SELECT_BY_NODE_PK)
-//                    .setParameter("nodePK", node.getPk()).getResultList();
-//            for (Attribute attr : attrs)
-//                em.remove(attr);
             em.remove(node);
             utm.commit();
         } catch (Exception e) {

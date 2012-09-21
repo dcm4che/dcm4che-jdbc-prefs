@@ -154,6 +154,14 @@ public class PreferencesImpl extends AbstractPreferences {
     }
 
     @Override
+    public void removeNode() throws BackingStoreException {
+        if (this.node.getName().equals("rootNode"))
+            throw new UnsupportedOperationException("Can't remove the root node!");
+        
+        removeNodeSpi();
+    }
+
+    @Override
     protected void removeSpi(String key) {
         LOG.debug("removeSpi(String) - key = " + key);
         preferencesFactoryImpl.removeAttributeByKey(key, node);
