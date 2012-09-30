@@ -38,7 +38,6 @@
 
 package org.dcm4che.jdbc.prefs;
 
-import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.prefs.PreferencesFactory;
 
@@ -46,13 +45,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Logger;
-import org.dcm4che.jdbc.prefs.persistence.Attribute;
-import org.dcm4che.jdbc.prefs.persistence.Node;
 
 /**
  * @author Michael Backhaus <michael.backhaus@agfa.com>
@@ -63,31 +57,34 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
 
     protected static final Logger LOG = Logger.getLogger(PreferencesFactoryImpl.class);
 
-    EntityManager em;
-    static UserTransaction utm;
-
-    public PreferencesFactoryImpl() throws InterruptedException {
-        this(lookupEntityManagerFactory());
+    @Override
+    public Preferences systemRoot() {
+        if (rootPreferences == null) {
+            EntityManagerFactory emf = getEntityManagerFactory();
+            EntityManager em = emf.createEntityManager();
+            PreferencesImplBean pib = new PreferencesImplBean(em);
+            rootPreferences = new PreferencesImpl(pib);
+        }
+        return rootPreferences;
     }
 
-    protected PreferencesFactoryImpl(EntityManagerFactory emf) {
-        this.em = emf.createEntityManager();
-    }
-
-    private static EntityManagerFactory lookupEntityManagerFactory() throws InterruptedException {
+    private EntityManagerFactory getEntityManagerFactory() {
         EntityManagerFactory emf = null;
         int counter = getJndiTimeout();
         while (emf == null)
             try {
                 emf = (EntityManagerFactory) new InitialContext().lookup("java:jboss/JdbcPrefsEntityManagerFactory");
-                utm = (UserTransaction) new InitialContext().lookup("java:jboss/UserTransaction");
             } catch (NamingException e) {
                 if (counter == 0)
                     throw new RuntimeException(e);
                 else {
                     LOG.error("Waiting for JNDI lookup ... " + counter);
                     counter--;
-                    Thread.sleep(1000);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
         return emf;
@@ -103,123 +100,7 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
     }
 
     @Override
-    public Preferences systemRoot() {
-        if (rootPreferences == null) {
-            String datasource = System.getProperty("jdbc.prefs.datasource");
-            if (datasource == null)
-                throw new RuntimeException("Missing system property 'jdbc.prefs.datasource'");
-
-            if (datasource.startsWith("jdbc:"))
-                rootPreferences = new PreferencesImpl(new PreferencesFactoryJDBCImpl());
-            else if (datasource.startsWith("java:"))
-                rootPreferences = new PreferencesImpl(this);
-            else
-                throw new RuntimeException("Unsupported datasource: " + datasource);
-        }
-        return rootPreferences;
-    }
-
-    @Override
     public Preferences userRoot() {
         return systemRoot();
-    }
-
-    public void insertNode(Node node) {
-        try {
-            utm.begin();
-            em.joinTransaction();
-            em.persist(node);
-            utm.commit();
-        } catch (Exception e) {
-            LOG.error(e);
-            try {
-                utm.rollback();
-            } catch (SystemException sysex) {
-                throw new RuntimeException(sysex);
-            }
-        }
-    }
-
-    public void removeNode(Node node) {
-        try {
-            utm.begin();
-            em.joinTransaction();
-            em.remove(node);
-            utm.commit();
-        } catch (Exception e) {
-            LOG.error(e);
-            try {
-                utm.rollback();
-            } catch (SystemException sysex) {
-                throw new RuntimeException(sysex);
-            }
-        }
-    }
-
-    public void insertAttribute(Attribute attribute) {
-        try {
-            utm.begin();
-            em.joinTransaction();
-            em.persist(attribute);
-            utm.commit();
-        } catch (Exception e) {
-            LOG.error(e);
-            try {
-                utm.rollback();
-            } catch (SystemException sysex) {
-                throw new RuntimeException(sysex);
-            }
-        }
-    }
-
-    public void removeAttributeByKey(String key, Node node) {
-        try {
-            utm.begin();
-            em.joinTransaction();
-            em.createNamedQuery(Attribute.DELETE_BY_KEY_AND_NODE_PK).setParameter("key", key)
-                    .setParameter("nodePK", node.getPk()).executeUpdate();
-            utm.commit();
-        } catch (Exception e) {
-            LOG.error(e);
-            try {
-                utm.rollback();
-            } catch (SystemException sysex) {
-                throw new RuntimeException(sysex);
-            }
-        }
-    }
-
-    public Node getRootNode() {
-        try {
-            return (Node) em.createNamedQuery(Node.GET_ROOT_NODE).getSingleResult();
-        } catch (NoResultException e) {
-            return new Node();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public List<Node> getChildren(Node parent) {
-        return em.createNamedQuery(Node.GET_CHILDREN, Node.class).setParameter(1, parent).getResultList();
-    }
-
-    public void flush() {
-        try {
-            utm.begin();
-            em.joinTransaction();
-            em.flush();
-            utm.commit();
-        } catch (Exception e) {
-            LOG.error(e);
-            try {
-                utm.rollback();
-            } catch (SystemException sysex) {
-                throw new RuntimeException(sysex);
-            }
-        }
-    }
-
-    public void refresh(Node node) {
-        em.refresh(node);
     }
 }

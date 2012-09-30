@@ -42,6 +42,8 @@ import java.util.HashMap;
 import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
 
+import javax.ejb.EJB;
+
 import org.apache.log4j.Logger;
 import org.dcm4che.jdbc.prefs.persistence.Attribute;
 import org.dcm4che.jdbc.prefs.persistence.Node;
@@ -51,10 +53,12 @@ import org.dcm4che.jdbc.prefs.persistence.Node;
  * @author Michael Backhaus <michael.backhaus@agfa.com>
  */
 public class PreferencesImpl extends AbstractPreferences {
+    
+    @EJB
+    private PreferencesImplBean pib;
 
     private static final Logger LOG = Logger.getLogger(PreferencesImpl.class);
 
-    private PreferencesFactoryImpl preferencesFactoryImpl;
     private Node node = new Node();
     private HashMap<String, String> attributes;
     private HashMap<String, Node> childs;
@@ -71,27 +75,27 @@ public class PreferencesImpl extends AbstractPreferences {
     private HashMap<String, Node> childs() {
         if (childs == null) {
             childs = new HashMap<String, Node>();
-            for (Node child : preferencesFactoryImpl.getChildren(node))
+            for (Node child : pib.getChildren(node))
                 childs.put(child.getName(), child);
         }
         return childs;
     }
 
-    public PreferencesImpl(PreferencesFactoryImpl preferencesFactoryImpl) {
+    public PreferencesImpl(PreferencesImplBean pib) {
         super(null, "");
-        this.preferencesFactoryImpl = preferencesFactoryImpl;
-        node = preferencesFactoryImpl.getRootNode();
+        this.pib = pib;
+        node = pib.getRootNode();
         if (node.getPk() == 0) {
             LOG.debug("PreferencesImpl() - insert new rootNode");
             node.setName("rootNode");
             node.setParentNode(null);
-            preferencesFactoryImpl.insertNode(node);
+            pib.insertNode(node);
         }
     }
 
     public PreferencesImpl(PreferencesImpl parent, Node child) {
         super(parent, child.getName());
-        this.preferencesFactoryImpl = parent.preferencesFactoryImpl;
+        this.pib = parent.pib;
         node = child;
     }
 
@@ -104,7 +108,7 @@ public class PreferencesImpl extends AbstractPreferences {
             child = new Node();
             child.setName(name);
             child.setParentNode(node);
-            preferencesFactoryImpl.insertNode(child);
+            pib.insertNode(child);
             childs.put(child.getName(), child);
         }
         return new PreferencesImpl(this, child);
@@ -140,32 +144,32 @@ public class PreferencesImpl extends AbstractPreferences {
         attr.setKey(key);
         attr.setValue(value);
         attr.setNode(node);
-        preferencesFactoryImpl.insertAttribute(attr);
+        pib.insertAttribute(attr);
         attributes().put(key, value);
     }
 
     @Override
     protected void removeNodeSpi() throws BackingStoreException {
         LOG.debug("removeNodeSpi() pk = " + node.getPk());
-        preferencesFactoryImpl.removeNode(node);
+        pib.removeNode(node);
         ((PreferencesImpl) parent()).childs().remove(name());
     }
 
     @Override
     protected void removeSpi(String key) {
         LOG.debug("removeSpi(String) - key = " + key);
-        preferencesFactoryImpl.removeAttributeByKey(key, node);
+        pib.removeAttributeByKey(key, node);
         attributes().remove(key);
     }
 
     @Override
     protected void flushSpi() throws BackingStoreException {
         LOG.debug("flushSpi()");
-        preferencesFactoryImpl.flush();
+        pib.flush();
     }
 
     @Override
     protected void syncSpi() throws BackingStoreException {
-        preferencesFactoryImpl.refresh(node);
+        pib.refresh(node);
     }
 }
