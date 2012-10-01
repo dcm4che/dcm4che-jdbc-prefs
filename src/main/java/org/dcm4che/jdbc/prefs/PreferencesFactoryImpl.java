@@ -43,8 +43,6 @@ import java.util.prefs.PreferencesFactory;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 import org.apache.log4j.Logger;
 
@@ -60,43 +58,15 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
     @Override
     public Preferences systemRoot() {
         if (rootPreferences == null) {
-            EntityManagerFactory emf = getEntityManagerFactory();
-            EntityManager em = emf.createEntityManager();
-            PreferencesImplBean pib = new PreferencesImplBean(em);
-            rootPreferences = new PreferencesImpl(pib);
+            try {
+                QueryPreferences pib = (QueryPreferences) new InitialContext()
+                        .lookup("java:global/dcm4che-jdbc-prefs-1.0.0-SNAPSHOT/QueryPreferencesBean");
+                rootPreferences = new PreferencesImpl(pib);
+            } catch (NamingException e) {
+                LOG.error("Error in JNDI loopup of java:global/dcm4che-jdbc-prefs-1.0.0-SNAPSHOT/QueryPreferencesBean", e);
+            }
         }
         return rootPreferences;
-    }
-
-    private EntityManagerFactory getEntityManagerFactory() {
-        EntityManagerFactory emf = null;
-        int counter = getJndiTimeout();
-        while (emf == null)
-            try {
-                emf = (EntityManagerFactory) new InitialContext().lookup("java:jboss/JdbcPrefsEntityManagerFactory");
-            } catch (NamingException e) {
-                if (counter == 0)
-                    throw new RuntimeException(e);
-                else {
-                    LOG.error("Waiting for JNDI lookup ... " + counter);
-                    counter--;
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            }
-        return emf;
-    }
-
-    private static int getJndiTimeout() {
-        try {
-            String counterString = System.getProperty("jdbc.prefs.jndi.timeout");
-            return (counterString == null) ? 30 : Integer.parseInt(counterString);
-        } catch (NumberFormatException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override

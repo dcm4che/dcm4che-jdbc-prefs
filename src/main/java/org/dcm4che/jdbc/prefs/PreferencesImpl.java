@@ -39,23 +39,20 @@
 package org.dcm4che.jdbc.prefs;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
-
-import javax.ejb.EJB;
 
 import org.apache.log4j.Logger;
 import org.dcm4che.jdbc.prefs.persistence.Attribute;
 import org.dcm4che.jdbc.prefs.persistence.Node;
 
-
 /**
  * @author Michael Backhaus <michael.backhaus@agfa.com>
  */
 public class PreferencesImpl extends AbstractPreferences {
-    
-    @EJB
-    private PreferencesImplBean pib;
+
+    private QueryPreferences pib;
 
     private static final Logger LOG = Logger.getLogger(PreferencesImpl.class);
 
@@ -66,12 +63,12 @@ public class PreferencesImpl extends AbstractPreferences {
     private HashMap<String, String> attributes() {
         if (attributes == null) {
             attributes = new HashMap<String, String>();
-            for (Attribute attr: node.getAttributes())
+            for (Attribute attr : node.getAttributes())
                 attributes.put(attr.getKey(), attr.getValue());
         }
         return attributes;
     }
-    
+
     private HashMap<String, Node> childs() {
         if (childs == null) {
             childs = new HashMap<String, Node>();
@@ -81,15 +78,17 @@ public class PreferencesImpl extends AbstractPreferences {
         return childs;
     }
 
-    public PreferencesImpl(PreferencesImplBean pib) {
+    public PreferencesImpl(QueryPreferences pib) {
         super(null, "");
         this.pib = pib;
-        node = pib.getRootNode();
-        if (node.getPk() == 0) {
+        List<Node> results = pib.getRootNode();
+        if (results.isEmpty()) {
             LOG.debug("PreferencesImpl() - insert new rootNode");
             node.setName("rootNode");
             node.setParentNode(null);
             pib.insertNode(node);
+        } else {
+            node = results.get(0);
         }
     }
 
