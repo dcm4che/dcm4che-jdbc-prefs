@@ -58,15 +58,38 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
     @Override
     public Preferences systemRoot() {
         if (rootPreferences == null) {
-            try {
-                QueryPreferences pib = (QueryPreferences) new InitialContext()
-                        .lookup("java:global/dcm4che-jdbc-prefs-1.0.0-SNAPSHOT/QueryPreferencesBean");
-                rootPreferences = new PreferencesImpl(pib);
-            } catch (NamingException e) {
-                LOG.error("Error in JNDI loopup of java:global/dcm4che-jdbc-prefs-1.0.0-SNAPSHOT/QueryPreferencesBean", e);
+            QueryPreferences qpbean = null;
+            int counter = getJndiTimeout();
+            while (qpbean == null) {
+                try {
+                    qpbean = (QueryPreferences) new InitialContext()
+                            .lookup("java:global/dcm4che-jdbc-prefs-1.0.0-SNAPSHOT/QueryPreferencesBean");
+                } catch (NamingException e) {
+                    if (counter == 0)
+                        throw new RuntimeException(e);
+                    else {
+                        LOG.error("Waiting for JNDI lookup ... " + counter);
+                        counter--;
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                }
             }
+            rootPreferences = new PreferencesImpl(qpbean);
         }
         return rootPreferences;
+    }
+
+    private static int getJndiTimeout() {
+        try {
+            String counterString = System.getProperty("jdbc.prefs.jndi.timeout");
+            return (counterString == null) ? 30 : Integer.parseInt(counterString);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
