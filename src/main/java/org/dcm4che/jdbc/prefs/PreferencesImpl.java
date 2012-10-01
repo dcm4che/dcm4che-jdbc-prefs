@@ -52,10 +52,9 @@ import org.dcm4che.jdbc.prefs.persistence.Node;
  */
 public class PreferencesImpl extends AbstractPreferences {
 
-    private QueryPreferences pib;
-
     private static final Logger LOG = Logger.getLogger(PreferencesImpl.class);
 
+    private QueryPreferences queryPreferences;
     private Node node = new Node();
     private HashMap<String, String> attributes;
     private HashMap<String, Node> childs;
@@ -72,21 +71,21 @@ public class PreferencesImpl extends AbstractPreferences {
     private HashMap<String, Node> childs() {
         if (childs == null) {
             childs = new HashMap<String, Node>();
-            for (Node child : pib.getChildren(node))
+            for (Node child : queryPreferences.getChildren(node))
                 childs.put(child.getName(), child);
         }
         return childs;
     }
 
-    public PreferencesImpl(QueryPreferences pib) {
+    public PreferencesImpl(QueryPreferences queryPreferences) {
         super(null, "");
-        this.pib = pib;
-        List<Node> results = pib.getRootNode();
+        this.queryPreferences = queryPreferences;
+        List<Node> results = queryPreferences.getRootNode();
         if (results.isEmpty()) {
             LOG.debug("PreferencesImpl() - insert new rootNode");
             node.setName("rootNode");
             node.setParentNode(null);
-            pib.insertNode(node);
+            queryPreferences.insertNode(node);
         } else {
             node = results.get(0);
         }
@@ -94,7 +93,7 @@ public class PreferencesImpl extends AbstractPreferences {
 
     public PreferencesImpl(PreferencesImpl parent, Node child) {
         super(parent, child.getName());
-        this.pib = parent.pib;
+        this.queryPreferences = parent.queryPreferences;
         node = child;
     }
 
@@ -107,7 +106,7 @@ public class PreferencesImpl extends AbstractPreferences {
             child = new Node();
             child.setName(name);
             child.setParentNode(node);
-            pib.insertNode(child);
+            queryPreferences.insertNode(child);
             childs.put(child.getName(), child);
         }
         return new PreferencesImpl(this, child);
@@ -143,32 +142,33 @@ public class PreferencesImpl extends AbstractPreferences {
         attr.setKey(key);
         attr.setValue(value);
         attr.setNode(node);
-        pib.insertAttribute(attr);
+        queryPreferences.insertAttribute(attr);
         attributes().put(key, value);
     }
 
     @Override
     protected void removeNodeSpi() throws BackingStoreException {
         LOG.debug("removeNodeSpi() pk = " + node.getPk());
-        pib.removeNode(node);
+        queryPreferences.removeNode(node);
         ((PreferencesImpl) parent()).childs().remove(name());
     }
 
     @Override
     protected void removeSpi(String key) {
         LOG.debug("removeSpi(String) - key = " + key);
-        pib.removeAttributeByKey(key, node);
+        queryPreferences.removeAttributeByKey(key, node);
         attributes().remove(key);
     }
 
     @Override
     protected void flushSpi() throws BackingStoreException {
         LOG.debug("flushSpi()");
-        pib.flush();
+        queryPreferences.flush();
     }
 
     @Override
     protected void syncSpi() throws BackingStoreException {
-        pib.refresh(node);
+        LOG.debug("syncSpi()");
+        queryPreferences.refresh(node);
     }
 }
