@@ -63,6 +63,7 @@ public class QueryPreferencesBean implements QueryPreferences {
 
     @Override
     public void removeNode(Node node) {
+        node = em.find(Node.class, node.getPk());
         em.remove(node);
     }
 
