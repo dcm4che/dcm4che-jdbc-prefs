@@ -44,8 +44,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.dcm4che.jdbc.prefs.persistence.Attribute;
-import org.dcm4che.jdbc.prefs.persistence.Node;
+import org.dcm4che.jdbc.prefs.entity.Attribute;
+import org.dcm4che.jdbc.prefs.entity.Node;
 
 /**
  * @author Michael Backhaus <michael.backhaus@agfa.com>

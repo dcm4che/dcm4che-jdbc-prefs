@@ -39,13 +39,13 @@
 package org.dcm4che.jdbc.prefs;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
 
 import org.apache.log4j.Logger;
 import org.dcm4che.jdbc.prefs.persistence.Attribute;
 import org.dcm4che.jdbc.prefs.persistence.Node;
+
 
 /**
  * @author Michael Backhaus <michael.backhaus@agfa.com>
@@ -54,7 +54,7 @@ public class PreferencesImpl extends AbstractPreferences {
 
     private static final Logger LOG = Logger.getLogger(PreferencesImpl.class);
 
-    private QueryPreferences queryPreferences;
+    private PreferencesFactoryJDBCImpl preferencesFactoryImpl;
     private Node node = new Node();
     private HashMap<String, String> attributes;
     private HashMap<String, Node> childs;
@@ -62,38 +62,36 @@ public class PreferencesImpl extends AbstractPreferences {
     private HashMap<String, String> attributes() {
         if (attributes == null) {
             attributes = new HashMap<String, String>();
-            for (Attribute attr : node.getAttributes())
+            for (Attribute attr: node.getAttributes())
                 attributes.put(attr.getKey(), attr.getValue());
         }
         return attributes;
     }
-
+    
     private HashMap<String, Node> childs() {
         if (childs == null) {
             childs = new HashMap<String, Node>();
-            for (Node child : queryPreferences.getChildren(node))
+            for (Node child : preferencesFactoryImpl.getChildren(node))
                 childs.put(child.getName(), child);
         }
         return childs;
     }
 
-    public PreferencesImpl(QueryPreferences queryPreferences) {
+    public PreferencesImpl(PreferencesFactoryJDBCImpl preferencesFactoryImpl) {
         super(null, "");
-        this.queryPreferences = queryPreferences;
-        List<Node> results = queryPreferences.getRootNode();
-        if (results.isEmpty()) {
+        this.preferencesFactoryImpl = preferencesFactoryImpl;
+        node = preferencesFactoryImpl.getRootNode();
+        if (node.getPk() == 0) {
             LOG.debug("PreferencesImpl() - insert new rootNode");
             node.setName("rootNode");
             node.setParentNode(null);
-            queryPreferences.insertNode(node);
-        } else {
-            node = results.get(0);
+            preferencesFactoryImpl.insertNode(node);
         }
     }
 
     public PreferencesImpl(PreferencesImpl parent, Node child) {
         super(parent, child.getName());
-        this.queryPreferences = parent.queryPreferences;
+        this.preferencesFactoryImpl = parent.preferencesFactoryImpl;
         node = child;
     }
 
@@ -106,7 +104,7 @@ public class PreferencesImpl extends AbstractPreferences {
             child = new Node();
             child.setName(name);
             child.setParentNode(node);
-            queryPreferences.insertNode(child);
+            preferencesFactoryImpl.insertNode(child);
             childs.put(child.getName(), child);
         }
         return new PreferencesImpl(this, child);
@@ -142,33 +140,32 @@ public class PreferencesImpl extends AbstractPreferences {
         attr.setKey(key);
         attr.setValue(value);
         attr.setNode(node);
-        queryPreferences.insertAttribute(attr);
+        preferencesFactoryImpl.insertAttribute(attr);
         attributes().put(key, value);
     }
 
     @Override
     protected void removeNodeSpi() throws BackingStoreException {
         LOG.debug("removeNodeSpi() pk = " + node.getPk());
-        queryPreferences.removeNode(node);
+        preferencesFactoryImpl.removeNode(node);
         ((PreferencesImpl) parent()).childs().remove(name());
     }
 
     @Override
     protected void removeSpi(String key) {
         LOG.debug("removeSpi(String) - key = " + key);
-        queryPreferences.removeAttributeByKey(key, node);
+        preferencesFactoryImpl.removeAttributeByKey(key, node);
         attributes().remove(key);
     }
 
     @Override
     protected void flushSpi() throws BackingStoreException {
         LOG.debug("flushSpi()");
-        queryPreferences.flush();
+        preferencesFactoryImpl.flush();
     }
 
     @Override
     protected void syncSpi() throws BackingStoreException {
-        LOG.debug("syncSpi()");
-        queryPreferences.refresh(node);
+        preferencesFactoryImpl.refresh(node);
     }
 }

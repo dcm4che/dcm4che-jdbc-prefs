@@ -1,168 +1,33 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dcm4che</groupId>
-  <artifactId>dcm4che-jdbc-prefs</artifactId>
-  <packaging>jar</packaging>
+  <artifactId>dcm4che-jdbc-prefs-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-  <name>Java Preferences to JDBC Connection</name>
+  <packaging>pom</packaging>
+  <name>dcm4che-jdbc-prefs-parent</name>
   <properties>
-    <db>oracle</db>
-    <ds>java:jboss/datasources/DicomPreferencesDS</ds>
+    <dcm4che.version>3.0.0-SNAPSHOT</dcm4che.version>
+    <hibernate.version>4.0.1.Final</hibernate.version>
+    <jpa.version>1.0.1.Final</jpa.version>
     <hbm2ddl.auto>validate</hbm2ddl.auto>
     <show_sql>false</show_sql>
     <log4j.version>1.2.16</log4j.version>
-    <jpa.version>1.0.1.Final</jpa.version>
-    <dcm4che.version>3.0.0-SNAPSHOT</dcm4che.version>
-    <hibernate.version>4.0.1.Final</hibernate.version>
+    <db>oracle</db>
   </properties>
   <build>
-    <filters>
-      <filter>src/main/filters/${db}.properties</filter>
-    </filters>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>exec-maven-plugin</artifactId>
-                    <versionRange>[1.1.1,)</versionRange>
-                    <goals>
-                      <goal>java</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore></ignore>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>com.mysema.maven</groupId>
-                    <artifactId>maven-apt-plugin</artifactId>
-                    <versionRange>[1.0.3,)</versionRange>
-                    <goals>
-                      <goal>process</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore></ignore>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>2.5.1</version>
         <configuration>
           <source>1.6</source>
           <target>1.6</target>
-          <encoding>ISO-8859-1</encoding>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.12</version>
-        <configuration>
-          <skipTests>true</skipTests>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <classifier>${project-classifier}</classifier>
-          <archive>
-            <manifestEntries>
-              <Dependencies>org.hibernate</Dependencies>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.1.1</version>
-        <executions>
-          <execution>
-            <id>generate-create-schema-ddl</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-            <configuration>
-              <includePluginDependencies>true</includePluginDependencies>
-              <mainClass>com.blogspot.doingenterprise.SchemaExport</mainClass>
-              <arguments>
-                <argument>--create</argument>
-                <argument>--delimiter=;</argument>
-                <argument>--output=${project.build.directory}/create-${db}.ddl</argument>
-                <argument>dcm4che-jdbc-prefs</argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>com.blogspot.doingenterprise</groupId>
-            <artifactId>schema-export</artifactId>
-            <version>2012_05_01</version>
-          </dependency>
-        </dependencies>
       </plugin>
     </plugins>
-    <resources>
-      <resource>
-        <directory>src/main/persistence</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>**/*</include>
-        </includes>
-      </resource>
-    </resources>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>${log4j.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.10</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.0-api</artifactId>
-      <version>${jpa.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-annotations</artifactId>
-      <version>3.5.6-Final</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.spec.javax.ejb</groupId>
-      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-      <version>1.0.2.Final</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
+  <modules>
+    <module>dcm4che-jdbc-prefs-jboss</module>
+    <module>dcm4che-jdbc-prefs-tool</module>
+  </modules>
 </project>

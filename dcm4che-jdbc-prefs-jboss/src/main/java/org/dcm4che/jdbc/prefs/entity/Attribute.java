@@ -12,7 +12,7 @@
  * License.
  *
  * The Original Code is part of dcm4che, an implementation of DICOM(TM) in
- * Java(TM), hosted at https://github.com/gunterze/dcm4che.
+ * Java(TM), hosted at https://github.com/dcm4che.
  *
  * The Initial Developer of the Original Code is
  * Agfa Healthcare.
@@ -36,32 +36,83 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-package org.dcm4che.jdbc.prefs;
+package org.dcm4che.jdbc.prefs.entity;
 
-import java.util.List;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
-import org.dcm4che.jdbc.prefs.persistence.Attribute;
-import org.dcm4che.jdbc.prefs.persistence.Node;
+import org.hibernate.annotations.Index;
 
 /**
  * @author Michael Backhaus <michael.backhaus@agfa.com>
  */
-public interface QueryPreferences {
+@NamedQueries({
+    @NamedQuery(
+            name = "Attribute.deleteByKeyAndNodePK",
+            query = "DELETE FROM Attribute attr WHERE attr.key = :key and attr.node.pk = :nodePK"),
+    @NamedQuery(
+            name = "Attribute.getAttributesByNodePK",
+            query = "SELECT attr FROM Attribute attr WHERE attr.node.pk = :nodePK")
+})
+@Entity
+@Table(name = "attribute")
+public class Attribute {
 
-    public abstract void insertNode(Node node);
+    public static final String DELETE_BY_KEY_AND_NODE_PK = "Attribute.deleteByKeyAndNodePK";
+    public static final String SELECT_BY_NODE_PK = "Attribute.getAttributesByNodePK";
 
-    public abstract void removeNode(Node node);
+    @Id
+    @GeneratedValue
+    private int pk;
 
-    public abstract void insertAttribute(Attribute attribute);
+    @Basic(optional = false)
+    @Column
+    @Index(name="attribute_key_idx")
+    private String key;
 
-    public abstract void removeAttributeByKey(String key, Node node);
+    @Basic(optional = false)
+    @Column(length=4000)
+    private String value;
 
-    public abstract List<Node> getRootNode();
+    @ManyToOne
+    private Node node;
 
-    public abstract List<Node> getChildren(Node parent);
+    public int getPk() {
+        return pk;
+    }
 
-    public abstract void flush();
+    public void setPk(int pk) {
+        this.pk = pk;
+    }
 
-    public abstract void refresh(Node node);
+    public String getKey() {
+        return key;
+    }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public Node getNode() {
+        return node;
+    }
+
+    public void setNode(Node node) {
+        this.node = node;
+    }
 }

@@ -63,7 +63,7 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
             while (qpbean == null) {
                 try {
                     qpbean = (QueryPreferences) new InitialContext()
-                            .lookup("java:global/dcm4che-jdbc-prefs-1.0.0-SNAPSHOT/QueryPreferencesBean");
+                            .lookup("java:global/jdbc-prefs/QueryPreferencesBean");
                 } catch (NamingException e) {
                     if (counter == 0)
                         throw new RuntimeException(e);
