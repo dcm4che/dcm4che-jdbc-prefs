@@ -38,51 +38,58 @@
 
 package org.dcm4che.jdbc.prefs.entity;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Index;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * @author Michael Backhaus <michael.backhaus@agfa.com>
  */
 @NamedQueries({
     @NamedQuery(
-            name = "Attribute.deleteByKeyAndNodePK",
-            query = "DELETE FROM Attribute attr WHERE attr.key = :key and attr.node.pk = :nodePK"),
+            name = "Node.getChildren",
+            query = "SELECT n from Node n LEFT JOIN FETCH n.attributes where n.parentNode = ?1"),
     @NamedQuery(
-            name = "Attribute.getAttributesByNodePK",
-            query = "SELECT attr FROM Attribute attr WHERE attr.node.pk = :nodePK")
+            name = "Node.getRootNode",
+            query = "SELECT n from Node n where n.name = 'rootNode'")
 })
 @Entity
-@Table(name = "attribute")
-public class Attribute {
+@Table(name = "node")
+public class Node {
 
-    public static final String DELETE_BY_KEY_AND_NODE_PK = "Attribute.deleteByKeyAndNodePK";
-    public static final String SELECT_BY_NODE_PK = "Attribute.getAttributesByNodePK";
+    public static final String GET_CHILDREN = "Node.getChildren";
+    public static final String GET_ROOT_NODE = "Node.getRootNode";
 
     @Id
     @GeneratedValue
     private int pk;
 
     @Basic(optional = false)
-    @Column
-    @Index(name="attribute_key_idx")
-    private String key;
-
-    @Basic(optional = false)
-    @Column(length=4000)
-    private String value;
+    @Index(name="node_name_idx")
+    private String name;
 
     @ManyToOne
-    private Node node;
+    @JoinColumn(name = "parent_pk")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Node parentNode;
+
+    @OneToMany(mappedBy = "node", orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Collection<Attribute> attributes = new HashSet<Attribute>();
 
     public int getPk() {
         return pk;
@@ -92,27 +99,23 @@ public class Attribute {
         this.pk = pk;
     }
 
-    public String getKey() {
-        return key;
+    public String getName() {
+        return name;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getValue() {
-        return value;
+    public Node getParentNode() {
+        return parentNode;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setParentNode(Node parent) {
+        this.parentNode = parent;
     }
 
-    public Node getNode() {
-        return node;
-    }
-
-    public void setNode(Node node) {
-        this.node = node;
+    public Collection<Attribute> getAttributes() {
+        return attributes;
     }
 }

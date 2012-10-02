@@ -62,7 +62,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @NamedQueries({
     @NamedQuery(
             name = "Node.getChildren",
-            query = "SELECT n from Node n where n.parentNode = ?1"),
+            query = "SELECT n from Node n LEFT JOIN FETCH n.attributes where n.parentNode = ?1"),
     @NamedQuery(
             name = "Node.getRootNode",
             query = "SELECT n from Node n where n.name = 'rootNode'")
@@ -87,7 +87,7 @@ public class Node {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Node parentNode;
 
-    @OneToMany(mappedBy = "node")
+    @OneToMany(mappedBy = "node", orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Collection<Attribute> attributes = new HashSet<Attribute>();
 

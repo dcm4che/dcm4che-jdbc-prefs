@@ -36,60 +36,56 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-package org.dcm4che.jdbc.prefs.persistence;
-
-import java.util.Collection;
-import java.util.HashSet;
+package org.dcm4che.jdbc.prefs.entity;
 
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Index;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * @author Michael Backhaus <michael.backhaus@agfa.com>
  */
 @NamedQueries({
     @NamedQuery(
-            name = "Node.getChildren",
-            query = "SELECT n from Node n where n.parentNode = ?1"),
+            name = "Attribute.deleteByKeyAndNodePK",
+            query = "DELETE FROM Attribute attr WHERE attr.key = :key and attr.node.pk = :nodePK"),
     @NamedQuery(
-            name = "Node.getRootNode",
-            query = "SELECT n from Node n where n.name = 'rootNode'")
+            name = "Attribute.getAttributesByNodePK",
+            query = "SELECT attr FROM Attribute attr WHERE attr.node.pk = :nodePK")
 })
 @Entity
-@Table(name = "node")
-public class Node {
+@Table(name = "attribute")
+public class Attribute {
 
-    public static final String GET_CHILDREN = "Node.getChildren";
-    public static final String GET_ROOT_NODE = "Node.getRootNode";
+    public static final String DELETE_BY_KEY_AND_NODE_PK = "Attribute.deleteByKeyAndNodePK";
+    public static final String SELECT_BY_NODE_PK = "Attribute.getAttributesByNodePK";
 
     @Id
     @GeneratedValue
     private int pk;
 
     @Basic(optional = false)
-    @Index(name="node_name_idx")
-    private String name;
+    @Column
+    @Index(name="attribute_key_idx")
+    private String key;
 
-    @ManyToOne
-    @JoinColumn(name = "parent_pk")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Node parentNode;
+    @Basic(optional = false)
+    @Column(length=4000)
+    private String value;
 
-    @OneToMany(mappedBy = "node")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Collection<Attribute> attributes = new HashSet<Attribute>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "node_fk")
+    private Node node;
 
     public int getPk() {
         return pk;
@@ -99,23 +95,27 @@ public class Node {
         this.pk = pk;
     }
 
-    public String getName() {
-        return name;
+    public String getKey() {
+        return key;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public Node getParentNode() {
-        return parentNode;
+    public String getValue() {
+        return value;
     }
 
-    public void setParentNode(Node parent) {
-        this.parentNode = parent;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public Collection<Attribute> getAttributes() {
-        return attributes;
+    public Node getNode() {
+        return node;
+    }
+
+    public void setNode(Node node) {
+        this.node = node;
     }
 }

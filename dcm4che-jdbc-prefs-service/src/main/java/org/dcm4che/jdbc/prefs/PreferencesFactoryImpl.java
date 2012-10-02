@@ -54,6 +54,8 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
     private Preferences rootPreferences;
 
     protected static final Logger LOG = Logger.getLogger(PreferencesFactoryImpl.class);
+    
+    private String beanName = "java:module/QueryPreferencesBean";
 
     @Override
     public Preferences systemRoot() {
@@ -63,12 +65,12 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
             while (qpbean == null) {
                 try {
                     qpbean = (QueryPreferences) new InitialContext()
-                            .lookup("java:global/jdbc-prefs/QueryPreferencesBean");
+                            .lookup(beanName);
                 } catch (NamingException e) {
                     if (counter == 0)
                         throw new RuntimeException(e);
                     else {
-                        LOG.error("Waiting for JNDI lookup ... " + counter);
+                        LOG.error("Waiting for JNDI lookup of " + beanName + " ... " + counter);
                         counter--;
                         try {
                             Thread.sleep(1000);
@@ -86,7 +88,7 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
     private static int getJndiTimeout() {
         try {
             String counterString = System.getProperty("jdbc.prefs.jndi.timeout");
-            return (counterString == null) ? 30 : Integer.parseInt(counterString);
+            return (counterString == null) ? 10 : Integer.parseInt(counterString);
         } catch (NumberFormatException e) {
             throw new RuntimeException(e);
         }

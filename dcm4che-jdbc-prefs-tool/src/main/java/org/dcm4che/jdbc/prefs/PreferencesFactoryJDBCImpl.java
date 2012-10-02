@@ -45,12 +45,13 @@ import java.util.prefs.Preferences;
 import java.util.prefs.PreferencesFactory;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 
 import org.apache.log4j.Logger;
-import org.dcm4che.jdbc.prefs.persistence.Attribute;
-import org.dcm4che.jdbc.prefs.persistence.Node;
+import org.dcm4che.jdbc.prefs.entity.Attribute;
+import org.dcm4che.jdbc.prefs.entity.Node;
 
 /**
  * @author Michael Backhaus <michael.backhaus@agfa.com>
@@ -131,12 +132,11 @@ public class PreferencesFactoryJDBCImpl implements PreferencesFactory {
 
     public Node getRootNode() {
         em.getTransaction().begin();
+        Node result = new Node();
         try {
             return em.createNamedQuery(Node.GET_ROOT_NODE, Node.class).getSingleResult();
         } catch (NoResultException e) {
-            return new Node();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            return result;
         } finally {
             em.getTransaction().commit();
         }

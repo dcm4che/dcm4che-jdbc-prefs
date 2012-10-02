@@ -27,7 +27,9 @@
     </plugins>
   </build>
   <modules>
-    <module>dcm4che-jdbc-prefs-jboss</module>
+    <module>dcm4che-jdbc-prefs-entity</module>
+    <module>dcm4che-jdbc-prefs-service</module>
     <module>dcm4che-jdbc-prefs-tool</module>
+    <module>dcm4che-jdbc-prefs-war</module>
   </modules>
 </project>

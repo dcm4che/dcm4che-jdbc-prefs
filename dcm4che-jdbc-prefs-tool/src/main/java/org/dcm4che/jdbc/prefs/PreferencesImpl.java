@@ -43,8 +43,8 @@ import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
 
 import org.apache.log4j.Logger;
-import org.dcm4che.jdbc.prefs.persistence.Attribute;
-import org.dcm4che.jdbc.prefs.persistence.Node;
+import org.dcm4che.jdbc.prefs.entity.Attribute;
+import org.dcm4che.jdbc.prefs.entity.Node;
 
 
 /**
