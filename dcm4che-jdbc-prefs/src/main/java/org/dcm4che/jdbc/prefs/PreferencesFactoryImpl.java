@@ -54,8 +54,8 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
     private Preferences rootPreferences;
 
     protected static final Logger LOG = Logger.getLogger(PreferencesFactoryImpl.class);
-    
-    private String beanName = "java:module/QueryPreferencesBean";
+
+    private String beanName = "java:global/dcm4che-jdbc-prefs-1.0.0-SNAPSHOT/QueryPreferencesBean";
 
     @Override
     public Preferences systemRoot() {
@@ -64,8 +64,7 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
             int counter = getJndiTimeout();
             while (qpbean == null) {
                 try {
-                    qpbean = (QueryPreferences) new InitialContext()
-                            .lookup(beanName);
+                    qpbean = (QueryPreferences) new InitialContext().lookup(beanName);
                 } catch (NamingException e) {
                     if (counter == 0)
                         throw new RuntimeException(e);
