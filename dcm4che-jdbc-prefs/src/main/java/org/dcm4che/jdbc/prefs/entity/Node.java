@@ -54,6 +54,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Index;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * @author Michael Backhaus <michael.backhaus@agfa.com>
@@ -76,11 +78,13 @@ public class Node {
     @Index(name = "node_name_idx")
     private String name;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "parent_pk")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Node parentNode;
 
     @OneToMany(mappedBy = "node", cascade = CascadeType.REMOVE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Collection<Attribute> attributes = new HashSet<Attribute>();
 
     public int getPk() {
