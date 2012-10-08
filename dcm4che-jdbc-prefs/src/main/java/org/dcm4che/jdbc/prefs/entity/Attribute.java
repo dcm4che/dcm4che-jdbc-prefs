@@ -75,12 +75,12 @@ public class Attribute {
     private int pk;
 
     @Basic(optional = false)
-    @Column
+    @Column(name = "attr_key")
     @Index(name="attribute_key_idx")
     private String key;
 
     @Basic(optional = false)
-    @Column(length=4000)
+    @Column(length=4000, name = "attr_value")
     private String value;
 
     @ManyToOne(fetch = FetchType.EAGER)
