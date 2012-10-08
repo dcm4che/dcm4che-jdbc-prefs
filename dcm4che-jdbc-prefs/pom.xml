@@ -138,10 +138,15 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+     <groupId>org.hibernate</groupId>
+     <artifactId>hibernate-core</artifactId>
+     <version>${hibernate.version}</version>
+     <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-annotations</artifactId>
-      <version>3.5.6-Final</version>
-      <scope>provided</scope>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>${hibernate.version}</version>
     </dependency>
   </dependencies>
 </project>

@@ -41,7 +41,6 @@ package org.dcm4che.jdbc.prefs.entity;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -83,7 +82,7 @@ public class Attribute {
     @Column(length=4000, name = "attr_value")
     private String value;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "node_fk")
     private Node node;
 

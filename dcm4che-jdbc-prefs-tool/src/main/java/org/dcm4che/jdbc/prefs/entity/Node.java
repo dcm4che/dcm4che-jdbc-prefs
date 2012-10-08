@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -53,20 +54,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Index;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * @author Michael Backhaus <michael.backhaus@agfa.com>
  */
 @NamedQueries({
-    @NamedQuery(
-            name = "Node.getChildren",
-            query = "SELECT n from Node n LEFT JOIN FETCH n.attributes where n.parentNode = ?1"),
-    @NamedQuery(
-            name = "Node.getRootNode",
-            query = "SELECT n from Node n where n.name = 'rootNode'")
-})
+        @NamedQuery(name = "Node.getChildren", query = "SELECT n from Node n LEFT JOIN FETCH n.attributes where n.parentNode = ?1"),
+        @NamedQuery(name = "Node.getRootNode", query = "SELECT n from Node n where n.name = 'rootNode'") })
 @Entity
 @Table(name = "node")
 public class Node {
@@ -79,16 +73,14 @@ public class Node {
     private int pk;
 
     @Basic(optional = false)
-    @Index(name="node_name_idx")
+    @Index(name = "node_name_idx")
     private String name;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "parent_pk")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Node parentNode;
 
-    @OneToMany(mappedBy = "node", orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "node", cascade = CascadeType.REMOVE)
     private Collection<Attribute> attributes = new HashSet<Attribute>();
 
     public int getPk() {
