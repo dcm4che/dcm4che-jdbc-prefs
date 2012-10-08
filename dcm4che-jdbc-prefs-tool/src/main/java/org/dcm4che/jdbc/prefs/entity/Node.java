@@ -42,7 +42,6 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -80,7 +79,6 @@ public class Node {
 
     @ManyToOne
     @JoinColumn(name = "parent_pk")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Node parentNode;
 
     @OneToMany(mappedBy = "node")
