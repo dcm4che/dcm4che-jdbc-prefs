@@ -55,13 +55,8 @@ import org.hibernate.annotations.Index;
  * @author Michael Backhaus <michael.backhaus@agfa.com>
  */
 @NamedQueries({
-    @NamedQuery(
-            name = "Attribute.deleteByKeyAndNodePK",
-            query = "DELETE FROM Attribute attr WHERE attr.key = :key and attr.node.pk = :nodePK"),
-    @NamedQuery(
-            name = "Attribute.getAttributesByNodePK",
-            query = "SELECT attr FROM Attribute attr WHERE attr.node.pk = :nodePK")
-})
+        @NamedQuery(name = "Attribute.deleteByKeyAndNodePK", query = "DELETE FROM Attribute attr WHERE attr.key = :key and attr.node.pk = :nodePK"),
+        @NamedQuery(name = "Attribute.getAttributesByNodePK", query = "SELECT attr FROM Attribute attr WHERE attr.node.pk = :nodePK") })
 @Entity
 @Table(name = "attribute")
 public class Attribute {
@@ -75,11 +70,11 @@ public class Attribute {
 
     @Basic(optional = false)
     @Column(name = "attr_key")
-    @Index(name="attribute_key_idx")
+    @Index(name = "attribute_key_idx")
     private String key;
 
     @Basic(optional = false)
-    @Column(length=4000, name = "attr_value")
+    @Column(length = 4000, name = "attr_value")
     private String value;
 
     @ManyToOne

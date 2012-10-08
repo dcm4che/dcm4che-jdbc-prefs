@@ -83,7 +83,7 @@ public class Node {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Node parentNode;
 
-    @OneToMany(mappedBy = "node", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "node")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Collection<Attribute> attributes = new HashSet<Attribute>();
 
