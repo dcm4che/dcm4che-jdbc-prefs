@@ -140,6 +140,7 @@ public class PreferencesImpl extends AbstractPreferences {
         attr.setKey(key);
         attr.setValue(value);
         attr.setNode(node);
+        preferencesFactoryImpl.removeAttributeByKey(key, node);
         preferencesFactoryImpl.insertAttribute(attr);
         attributes().put(key, value);
     }
