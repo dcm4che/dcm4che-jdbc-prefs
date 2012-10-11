@@ -163,13 +163,13 @@ public class PreferencesImpl extends AbstractPreferences {
 
     @Override
     protected void flushSpi() throws BackingStoreException {
-        LOG.debug("flushSpi()");
-        queryPreferences.flush();
+//        LOG.debug("flushSpi()");
+//        queryPreferences.flush();
     }
 
     @Override
     protected void syncSpi() throws BackingStoreException {
-        LOG.debug("syncSpi()");
-        queryPreferences.refresh(node);
+//        LOG.debug("syncSpi()");
+//        queryPreferences.refresh(node);
     }
 }

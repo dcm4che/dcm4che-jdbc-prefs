@@ -13,6 +13,7 @@
     <show_sql>false</show_sql>
     <log4j.version>1.2.16</log4j.version>
     <db>oracle</db>
+    <skipTests>true</skipTests>
   </properties>
   <build>
     <plugins>
