@@ -78,7 +78,6 @@ public class Attribute {
     private String value;
 
     @ManyToOne
-    @Index(name = "node_fk_idx")
     @JoinColumn(name = "node_fk")
     private Node node;
 
