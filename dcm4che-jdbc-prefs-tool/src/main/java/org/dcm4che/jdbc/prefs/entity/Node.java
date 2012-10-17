@@ -52,6 +52,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -78,7 +79,10 @@ public class Node {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "parent_pk")
+    @JoinColumn(name = "parent")
+    @ForeignKey(name = "parent_fk")
+    @Index(name = "parent_idx")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Node parentNode;
 
     @OneToMany(mappedBy = "node")

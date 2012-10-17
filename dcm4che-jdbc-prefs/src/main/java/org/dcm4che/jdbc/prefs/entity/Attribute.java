@@ -49,6 +49,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.ForeignKey;
 import org.hibernate.annotations.Index;
 
 /**
@@ -78,7 +79,9 @@ public class Attribute {
     private String value;
 
     @ManyToOne
-    @JoinColumn(name = "node_fk")
+    @JoinColumn(name = "node")
+    @ForeignKey(name = "node_fk")
+    @Index(name = "node_idx")
     private Node node;
 
     public int getPk() {
