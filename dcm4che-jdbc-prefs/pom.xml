@@ -13,9 +13,6 @@
   </properties>
   <packaging>jar</packaging>
   <build>
-    <filters>
-      <filter>src/main/filters/${db}.properties</filter>
-    </filters>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -104,11 +101,8 @@
     </plugins>
     <resources>
       <resource>
-        <directory>src/main/persistence</directory>
+        <directory>src/main/resources-${db}</directory>
         <filtering>true</filtering>
-        <includes>
-          <include>**/*</include>
-        </includes>
       </resource>
     </resources>
   </build>

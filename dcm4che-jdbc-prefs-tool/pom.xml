@@ -15,9 +15,6 @@
     <show_sql>true</show_sql>
   </properties>
   <build>
-    <filters>
-      <filter>src/main/filters/${db}.properties</filter>
-    </filters>
     <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
@@ -51,11 +48,8 @@
     </plugins>
     <resources>
       <resource>
-        <directory>src/main/persistence</directory>
+        <directory>src/main/resources-${db}</directory>
         <filtering>true</filtering>
-        <includes>
-          <include>**/*</include>
-        </includes>
       </resource>
     </resources>
   </build>
