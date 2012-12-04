@@ -47,8 +47,8 @@ set CP=%CP%;%DCM4CHE_HOME%\lib\log4j-1.2.16.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\dcm4che-jdbc-prefs-tool-1.0.0-SNAPSHOT.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\dcm4che-jdbc-prefs-entity-1.0.0-SNAPSHOT.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\hibernate-jpa-2.0-api-1.0.1.Final.jar
-set CP=%CP%;%DCM4CHE_HOME%\lib\hibernate-entitymanager-4.0.1.Final.jar
-set CP=%CP%;%DCM4CHE_HOME%\lib\hibernate-core-4.0.1.Final.jar
+set CP=%CP%;%DCM4CHE_HOME%\lib\hibernate-entitymanager-4.1.3.Final.jar
+set CP=%CP%;%DCM4CHE_HOME%\lib\hibernate-core-4.1.3.Final.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\jboss-logging-3.1.0.GA.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\jta-1.1.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\dom4j-1.6.1.jar
@@ -58,14 +58,14 @@ set CP=%CP%;%DCM4CHE_HOME%\lib\commons-collections-3.2.1.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\antlr-2.7.7.jar
 
 REM jdbc driver
-set CP=%CP%;%DCM4CHE_HOME%\lib\ojdbc6.jar"
+set CP=%CP%;%DCM4CHE_HOME%\lib\ojdbc6.jar
 
-# Setup jdbc preferences
-set PREFS="-Djava.util.prefs.PreferencesFactory=org.dcm4che.jdbc.prefs.PreferencesFactoryJDBCImpl"
+REM Setup jdbc preferences
+set PREFS=-Djava.util.prefs.PreferencesFactory=org.dcm4che.jdbc.prefs.PreferencesFactoryJDBCImpl
 
-# Setup jdbc connection properties
+REM Setup jdbc connection properties
 set JDBC=-Djdbc.prefs.datasource=jdbc:oracle:thin:@localhost:1521:xe
 set JDBC=%JDBC% -Djdbc.prefs.connection.username=prefs
 set JDBC=%JDBC% -Djdbc.prefs.connection.password=prefs
 
-"%JAVA%" %JAVA_OPTS% -cp "%CP%" %PREFS% %JDBC% %MAIN_CLASS% %ARGS%
+"%JAVA%" %JAVA_OPTS% -cp "%CP%" "%PREFS%" %JDBC% %MAIN_CLASS% %ARGS%
