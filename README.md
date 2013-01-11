@@ -125,7 +125,7 @@ The sub-project `dcm4che-jdbc-prefs-tool` provides a script (xmlPrefs2jdbc or xm
 into the SQL backend. To use the import script, follow these steps:
 * Unzip the file `dcm4che-jdbc-prefs-tool-<version>-bin.zip`
 * Copy a jdbc driver to the `/dcm4che-jdbc-prefs-tool-<version>-bin/lib/` directory
-* Edit the import script in `/dcm4che-jdbc-prefs-tool-<version>-bin/bin/xmlPrefs2jdbc (or xmlPrefs2jdbc.bat)
+* Edit the import script in `/dcm4che-jdbc-prefs-tool-<version>-bin/bin/xmlPrefs2jdbc` (or xmlPrefs2jdbc.bat)
 ** Change the line
 ```
 # JDCB Driver
