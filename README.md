@@ -126,19 +126,19 @@ into the SQL backend. To use the import script, follow these steps:
 * Unzip the file `dcm4che-jdbc-prefs-tool-<version>-bin.zip`
 * Copy a jdbc driver to the `/dcm4che-jdbc-prefs-tool-<version>-bin/lib/` directory
 * Open the import script `/dcm4che-jdbc-prefs-tool-<version>-bin/bin/xmlPrefs2jdbc` (or xmlPrefs2jdbc.bat) in an editor of your choice
-* Change the line
-```
-    # JDCB Driver
-    CP="$CP:$DCM4CHE_HOME/lib/ojdbc6.jar"
-```
+* Change the line  
+```  
+    # JDCB Driver  
+    CP="$CP:$DCM4CHE_HOME/lib/ojdbc6.jar"  
+```  
 to match the jdbc driver imported above
-* Change line
-```
-    # JDBC connection properties
-    JDBC="-Djdbc.prefs.datasource=jdbc:oracle:thin:@localhost:1521:xe"
-    JDBC="$JDBC -Djdbc.prefs.connection.username=prefs"
-    JDBC="$JDBC -Djdbc.prefs.connection.password=prefs"
-```
+* Change line  
+```  
+    # JDBC connection properties  
+    JDBC="-Djdbc.prefs.datasource=jdbc:oracle:thin:@localhost:1521:xe"  
+    JDBC="$JDBC -Djdbc.prefs.connection.username=prefs"  
+    JDBC="$JDBC -Djdbc.prefs.connection.password=prefs"  
+```  
 to match the username and password for your database connection
 * Run the script: `xml2prefs <xml-file>`
 
