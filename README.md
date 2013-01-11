@@ -125,19 +125,16 @@ The sub-project `dcm4che-jdbc-prefs-tool` provides a script (xmlPrefs2jdbc or xm
 into the SQL backend. To use the import script, follow these steps:
 * Unzip the file `dcm4che-jdbc-prefs-tool-<version>-bin.zip`
 * Copy a jdbc driver to the `/dcm4che-jdbc-prefs-tool-<version>-bin/lib/` directory
-* Edit the import script in `/dcm4che-jdbc-prefs-tool-<version>-bin/bin/xmlPrefs2jdbc` (or xmlPrefs2jdbc.bat) and change the line
-```
-# JDCB Driver
-CP="$CP:$DCM4CHE_HOME/lib/ojdbc6.jar"
-```
+* Open the import script `/dcm4che-jdbc-prefs-tool-<version>-bin/bin/xmlPrefs2jdbc` (or xmlPrefs2jdbc.bat) in an editor of your choice
+* Change the line
+    # JDCB Driver
+    CP="$CP:$DCM4CHE_HOME/lib/ojdbc6.jar"
 to match the jdbc driver imported above
-and change line
-```
-# JDBC connection properties
-JDBC="-Djdbc.prefs.datasource=jdbc:oracle:thin:@localhost:1521:xe"
-JDBC="$JDBC -Djdbc.prefs.connection.username=prefs"
-JDBC="$JDBC -Djdbc.prefs.connection.password=prefs"
-```
+* Change line
+    # JDBC connection properties
+    JDBC="-Djdbc.prefs.datasource=jdbc:oracle:thin:@localhost:1521:xe"
+    JDBC="$JDBC -Djdbc.prefs.connection.username=prefs"
+    JDBC="$JDBC -Djdbc.prefs.connection.password=prefs"
 to match the username and password for your database connection
 * Run the script: `xml2prefs <xml-file>`
 
