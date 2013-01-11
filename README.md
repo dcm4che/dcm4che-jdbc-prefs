@@ -19,8 +19,7 @@ Change to the root of the project directory and execute `$ mvn install [-D db=<d
 
 Supported databases are: oracle, mysql, psql, mssql, hsql, firebird, and db2.
 
-Example JDBC datasource: `jdbc:oracle:thin:@localhost:1521:xe`
-
+Example JDBC datasource: `jdbc:oracle:thin:@localhost:1521:xe`  
 Example JBoss AS7 datasource: `java:jboss/datasources/DicomPreferencesDS`
 
 Note: The datasource value can also be configured after compiling the project
