@@ -1,6 +1,7 @@
 dcm4che-jdbc-prefs-1.x
 ======================
 Source: https://github.com/dcm4che/dcm4che-jdbc-prefs
+
 Tracker: http://www.dcm4che.org/jira/browse/JDBCPREFS
 
 This project provides a wrapper for storage of Java Preferences data in a SQL backend.
@@ -10,16 +11,18 @@ according SQL backend.
 
 Dependencies
 ------------
-[schema-export]: https://github.com/dcm4che/schema-export/blob/master/README.md
+[schema-export](https://github.com/dcm4che/schema-export)
+
 [Maven 3](http://maven.apache.org)
 
 Build
 -----
-`mvn install [-D db=<database>] [-D ds=<datasource>]`
+Change to the root of the project directory and execute `$ mvn install [-D db=<database>] [-D ds=<datasource>]`
 
 Supported databases are: oracle, mysql, psql, mssql, hsql, firebird, and db2.
 
 Example JDBC datasource: `jdbc:oracle:thin:@localhost:1521:xe`
+
 Example JBoss AS7 datasource: `java:jboss/datasources/DicomPreferencesDS`
 
 Note: The datasource value can also be configured after compiling the project
@@ -36,8 +39,8 @@ This will create the required tables and indices.
 JBoss AS7 Configuration and Deployment
 --------------------------------------
 # Container Configuration
-Edit the xml file of the container configuration (e.g. `standalone/configuration/standalone.xml`) and add
-the following system properties underneath the `extension` node:
+* Edit the xml file of the container configuration (e.g. `standalone/configuration/standalone.xml`) and add
+the following system properties underneath the `</extension>` node:
 
 ```xml
 <system-properties>
@@ -45,11 +48,9 @@ the following system properties underneath the `extension` node:
     <property name="jdbc.prefs.datasource" value="java:jboss/datasources/DicomPreferencesDS"/>
 </system-properties>
 ```
+* Configure the datasource: [JBoss AS7 Data Source Configuration](https://community.jboss.org/wiki/DataSourceConfigurationInAS7)
 
-Configure the datasource:
-[JBoss AS7 Data Source Configuration]: https://community.jboss.org/wiki/DataSourceConfigurationInAS7
-
-Note: import an SQL driver to be used with the datasource before hand and set the user name and password
+Note: Import an SQL driver to be used with the datasource beforehand and set the user name and password
 according to your database configuration.
 
 Example:
@@ -69,8 +70,8 @@ Example:
 ```
 
 # Deployment
-Connect to the JBoss Command Line Interface (e.g. by executing `./<jboss-path>/bin/jboss-cli.sh -c`)
-and deploy the jar file: `deploy <build-path>/dcm4che-jdbc-prefs/dcm4che-jdbc-prefs/target/dcm4che-jdbc-prefs-<version>.jar`.
+Connect to the JBoss Command Line Interface (e.g. by executing `./<jboss-path>/bin/jboss-cli.sh -c`) and deploy the jar file: 
+`[standalone@localhost:9999 /] deploy <build-path>/dcm4che-jdbc-prefs/dcm4che-jdbc-prefs/target/dcm4che-jdbc-prefs-<version>.jar`.
 
 # Restart JBoss AS7
 Once the container configuration is done and the jar file is deployed, it is required to restart JBoss in order to load the
@@ -122,10 +123,10 @@ Configuration Data Import
 -------------------------
 The sub-project `dcm4che-jdbc-prefs-tool` provides a script (xmlPrefs2jdbc or xmlPrefs2jdbc.bat) for importing dcm4che compatible DICOM configuration data
 into the SQL backend. To use the import script, follow these steps:
-# Unzip the file `dcm4che-jdbc-prefs-tool-<version>-bin.zip`
-# Copy a jdbc driver to the `/dcm4che-jdbc-prefs-tool-<version>-bin/lib/` directory
-# Edit the import script in `/dcm4che-jdbc-prefs-tool-<version>-bin/bin/xmlPrefs2jdbc (or xmlPrefs2jdbc.bat)
-## Change the line
+* Unzip the file `dcm4che-jdbc-prefs-tool-<version>-bin.zip`
+* Copy a jdbc driver to the `/dcm4che-jdbc-prefs-tool-<version>-bin/lib/` directory
+* Edit the import script in `/dcm4che-jdbc-prefs-tool-<version>-bin/bin/xmlPrefs2jdbc (or xmlPrefs2jdbc.bat)
+** Change the line
 ```
 # JDCB Driver
 CP="$CP:$DCM4CHE_HOME/lib/ojdbc6.jar"
@@ -139,9 +140,10 @@ JDBC="$JDBC -Djdbc.prefs.connection.username=prefs"
 JDBC="$JDBC -Djdbc.prefs.connection.password=prefs"
 ```
 to match the username and password for your database connection
-# Run the script: `xml2prefs <xml-file>`
+* Run the script: `xml2prefs <xml-file>`
 
 Example:
+
 ```
 bin $ ./xmlPrefs2jdbc <path>/sample-config.xml 
 08:46:35,245 INFO  - HCANN000001: Hibernate Commons Annotations {4.0.1.Final}
