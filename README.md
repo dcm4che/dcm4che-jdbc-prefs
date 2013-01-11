@@ -10,8 +10,7 @@ according SQL backend.
 
 Dependencies
 ------------
-[schema-export](https://github.com/dcm4che/schema-export)
-
+[schema-export](https://github.com/dcm4che/schema-export)  
 [Maven 3](http://maven.apache.org)
 
 Build
