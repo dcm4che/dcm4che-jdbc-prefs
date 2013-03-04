@@ -133,7 +133,7 @@ to match the jdbc driver imported above
    > JDBC="$JDBC -Djdbc.prefs.connection.username=prefs"  
    > JDBC="$JDBC -Djdbc.prefs.connection.password=prefs"   
 to match the username and password for your database connection
-* Run the script: `xml2prefs <xml-file>`
+* Run the script: `xmlPrefs2jdbc <xml-file>`
 
 Example:
 
