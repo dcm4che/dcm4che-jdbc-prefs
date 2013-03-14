@@ -7,7 +7,7 @@ if not "%ECHO%" == ""  echo %ECHO%
 if "%OS%" == "Windows_NT"  setlocal
 
 set MAIN_CLASS=org.dcm4che.tool.xml2prefs.Xml2Prefs
-set MAIN_JAR=dcm4che-tool-xml2prefs-3.0.0.jar
+set MAIN_JAR=dcm4che-tool-xml2prefs-3.0.1.jar
 
 set DIRNAME=.\
 if "%OS%" == "Windows_NT" set DIRNAME=%~dp0%
@@ -44,8 +44,8 @@ set CP=%DCM4CHE_HOME%\lib\%MAIN_JAR%
 set CP=%CP%;%DCM4CHE_HOME%\lib\slf4j-api-1.6.4.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\slf4j-log4j12-1.6.4.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\log4j-1.2.16.jar
-set CP=%CP%;%DCM4CHE_HOME%\lib\dcm4che-jdbc-prefs-tool-1.0.0-SNAPSHOT.jar
-set CP=%CP%;%DCM4CHE_HOME%\lib\dcm4che-jdbc-prefs-entity-1.0.0-SNAPSHOT.jar
+set CP=%CP%;%DCM4CHE_HOME%\lib\dcm4che-jdbc-prefs-tool-1.0.0.jar
+set CP=%CP%;%DCM4CHE_HOME%\lib\dcm4che-jdbc-prefs-entity-1.0.0.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\hibernate-jpa-2.0-api-1.0.1.Final.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\hibernate-entitymanager-4.1.3.Final.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\hibernate-core-4.1.3.Final.jar

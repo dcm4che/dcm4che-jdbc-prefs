@@ -2,11 +2,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dcm4che</groupId>
   <artifactId>dcm4che-jdbc-prefs-parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>pom</packaging>
   <name>dcm4che-jdbc-prefs-parent</name>
   <properties>
-    <dcm4che.version>3.0.0</dcm4che.version>
+    <dcm4che.version>3.0.1</dcm4che.version>
     <hibernate.version>4.1.3.Final</hibernate.version>
     <jpa.version>1.0.1.Final</jpa.version>
     <hbm2ddl.auto>validate</hbm2ddl.auto>
@@ -27,8 +27,22 @@
       </plugin>
     </plugins>
   </build>
+  <repositories>
+    <repository>
+      <id>www.dcm4che.org</id>
+      <name>dcm4che Repository</name>
+      <url>http://www.dcm4che.org/maven2</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>www.dcm4che.org</id>
+      <name>dcm4che Repository</name>
+      <url>http://www.dcm4che.org/maven2</url>
+    </pluginRepository>
+  </pluginRepositories>
   <modules>
-    <module>dcm4che-jdbc-prefs</module>
+    <module>dcm4che-jdbc-prefs-ejb</module>
     <module>dcm4che-jdbc-prefs-tool</module>
   </modules>
 </project>
