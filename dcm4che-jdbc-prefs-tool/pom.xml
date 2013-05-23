@@ -2,8 +2,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.dcm4che</groupId>
-    <artifactId>dcm4che-jdbc-prefs-parent</artifactId>
+    <groupId>org.dcm4che.jdbc.prefs</groupId>
+    <artifactId>dcm4che-jdbc-prefs</artifactId>
     <version>1.0.0</version>
   </parent>
   <artifactId>dcm4che-jdbc-prefs-tool</artifactId>
@@ -51,14 +51,12 @@
         <directory>src/main/resources-${db}</directory>
         <filtering>true</filtering>
       </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
     </resources>
   </build>
   <dependencies>
-    <dependency>
-      <groupId>org.dcm4che.tool</groupId>
-      <artifactId>dcm4che-tool-xml2prefs</artifactId>
-      <version>${dcm4che.version}</version>
-    </dependency>
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.0-api</artifactId>

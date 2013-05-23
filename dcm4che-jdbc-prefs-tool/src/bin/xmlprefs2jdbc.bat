@@ -6,8 +6,8 @@ rem -------------------------------------------------------------------------
 if not "%ECHO%" == ""  echo %ECHO%
 if "%OS%" == "Windows_NT"  setlocal
 
-set MAIN_CLASS=org.dcm4che.tool.xml2prefs.Xml2Prefs
-set MAIN_JAR=dcm4che-tool-xml2prefs-3.0.1.jar
+set MAIN_CLASS=org.dcm4che.jdbc.prefs.xmlprefs2jdbc.XmlPrefs2Jdbc
+set MAIN_JAR=dcm4che-jdbc-prefs-tool-1.0.0.jar
 
 set DIRNAME=.\
 if "%OS%" == "Windows_NT" set DIRNAME=%~dp0%
@@ -44,7 +44,6 @@ set CP=%DCM4CHE_HOME%\lib\%MAIN_JAR%
 set CP=%CP%;%DCM4CHE_HOME%\lib\slf4j-api-1.6.4.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\slf4j-log4j12-1.6.4.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\log4j-1.2.16.jar
-set CP=%CP%;%DCM4CHE_HOME%\lib\dcm4che-jdbc-prefs-tool-1.0.0.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\dcm4che-jdbc-prefs-entity-1.0.0.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\hibernate-jpa-2.0-api-1.0.1.Final.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\hibernate-entitymanager-4.1.3.Final.jar
@@ -60,12 +59,9 @@ set CP=%CP%;%DCM4CHE_HOME%\lib\antlr-2.7.7.jar
 REM jdbc driver
 set CP=%CP%;%DCM4CHE_HOME%\lib\ojdbc6.jar
 
-REM Setup jdbc preferences
-set PREFS=-Djava.util.prefs.PreferencesFactory=org.dcm4che.jdbc.prefs.PreferencesFactoryJDBCImpl
-
 REM Setup jdbc connection properties
 set JDBC=-Djdbc.prefs.datasource=jdbc:oracle:thin:@localhost:1521:xe
 set JDBC=%JDBC% -Djdbc.prefs.connection.username=prefs
 set JDBC=%JDBC% -Djdbc.prefs.connection.password=prefs
 
-"%JAVA%" %JAVA_OPTS% -cp "%CP%" "%PREFS%" %JDBC% %MAIN_CLASS% %ARGS%
+"%JAVA%" %JAVA_OPTS% -cp "%CP%" %JDBC% %MAIN_CLASS% %ARGS%

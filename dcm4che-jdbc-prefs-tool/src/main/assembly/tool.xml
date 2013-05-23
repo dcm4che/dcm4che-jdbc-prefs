@@ -10,7 +10,7 @@
     <fileSet>
       <directory>src</directory>
       <includes>
-        <include>bin/xmlPrefs2jdbc</include>
+        <include>bin/xmlprefs2jdbc</include>
       </includes>
       <outputDirectory>.</outputDirectory>
       <fileMode>0755</fileMode>
@@ -19,7 +19,7 @@
     <fileSet>
       <directory>src</directory>
       <includes>
-        <include>bin/xmlPrefs2jdbc.bat</include>
+        <include>bin/xmlprefs2jdbc.bat</include>
       </includes>
       <outputDirectory>.</outputDirectory>
       <lineEnding>dos</lineEnding>
@@ -37,8 +37,7 @@
     <dependencySet>
       <outputDirectory>lib</outputDirectory>
       <includes>
-        <include>org.dcm4che:dcm4che-jdbc-prefs-tool</include>
-        <include>org.dcm4che.tool:dcm4che-tool-xml2prefs</include>
+        <include>org.dcm4che.jdbc.prefs:dcm4che-jdbc-prefs-tool</include>
         <include>log4j:log4j</include>
         <include>org.hibernate.javax.persistence:hibernate-jpa-2.0-api</include>
         <include>org.hibernate:hibernate-entitymanager</include>

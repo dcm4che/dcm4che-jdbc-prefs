@@ -41,7 +41,6 @@ the following system properties underneath the `</extension>` node:
 
 ```xml
 <system-properties>
-    <property name="java.util.prefs.PreferencesFactory" value="org.dcm4che.jdbc.prefs.PreferencesFactoryImpl"/>
     <property name="jdbc.prefs.datasource" value="java:jboss/datasources/DicomPreferencesDS"/>
 </system-properties>
 ```
@@ -163,3 +162,12 @@ Hibernate: insert into node (name, parent, pk) values (?, ?, ?)
 Hibernate: select node0_.pk as pk0_0_, attributes1_.pk as pk1_1_, node0_.name as name0_0_, node0_.parent as parent0_0_, attributes1_.attr_key as attr2_1_1_, attributes1_.node as node1_1_, attributes1_.attr_value as attr3_1_1_, attributes1_.node as node0_0__, attributes1_.pk as pk0__ from node node0_ left outer join attribute attributes1_ on node0_.pk=attributes1_.node where node0_.parent=?
 ...
 ```
+
+Developer Info
+--------------
+To use dcm4che-jdbc-prefs with your application, you need to set a mapping for the default PreferencesFactory
+to be overridden by the PreferencesFactoryImpl of this project, e.g.:
+```
+System.setProperty("java.util.prefs.PreferencesFactory", "org.dcm4che.jdbc.prefs.PreferencesFactoryImpl");
+```
+and add a dependency to include this project to the manifest, e.g.: ```deployment.dcm4che-jdbc-prefs-ejb-1.0.0.jar```.

@@ -2,12 +2,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.dcm4che</groupId>
-    <artifactId>dcm4che-jdbc-prefs-parent</artifactId>
+    <groupId>org.dcm4che.jdbc.prefs</groupId>
+    <artifactId>dcm4che-jdbc-prefs</artifactId>
     <version>1.0.0</version>
   </parent>
   <artifactId>dcm4che-jdbc-prefs-ejb</artifactId>
-  <name>dcm4che-jdbc-prefs</name>
+  <name>dcm4che-jdbc-prefs-ejb</name>
   <properties>
     <ds>java:jboss/datasources/DicomPreferencesDS</ds>
   </properties>
