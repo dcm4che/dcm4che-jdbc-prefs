@@ -41,6 +41,7 @@ the following system properties underneath the `</extension>` node:
 
 ```xml
 <system-properties>
+    <property name="java.util.prefs.PreferencesFactory" value="org.dcm4che.jdbc.prefs.PreferencesFactoryImpl"/>
     <property name="jdbc.prefs.datasource" value="java:jboss/datasources/DicomPreferencesDS"/>
 </system-properties>
 ```
@@ -170,4 +171,3 @@ to be overridden by the PreferencesFactoryImpl of this project, e.g.:
 ```
 System.setProperty("java.util.prefs.PreferencesFactory", "org.dcm4che.jdbc.prefs.PreferencesFactoryImpl");
 ```
-and add a dependency to include this project to the manifest, e.g.: ```deployment.dcm4che-jdbc-prefs-ejb-1.0.0.jar```.
