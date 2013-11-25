@@ -59,29 +59,31 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
 
     @Override
     public Preferences systemRoot() {
-        if (rootPreferences == null) {
-            QueryPreferences qpbean = null;
-            int counter = getJndiTimeout();
-            while (qpbean == null) {
-                try {
-                    qpbean = (QueryPreferences) new InitialContext().lookup(beanName);
-                } catch (NamingException e) {
-                    if (counter == 0)
-                        throw new RuntimeException(e);
-                    else {
-                        LOG.error("Waiting for JNDI lookup of " + beanName + " ... " + counter);
-                        counter--;
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
+        synchronized (this) {
+            if (rootPreferences == null) {
+                QueryPreferences qpbean = null;
+                int counter = getJndiTimeout();
+                while (qpbean == null) {
+                    try {
+                        qpbean = (QueryPreferences) new InitialContext().lookup(beanName);
+                    } catch (NamingException e) {
+                        if (counter == 0)
+                            throw new RuntimeException(e);
+                        else {
+                            LOG.error("Waiting for JNDI lookup of " + beanName + " ... " + counter);
+                            counter--;
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
+                            }
                         }
                     }
                 }
+                rootPreferences = new PreferencesImpl(qpbean);
             }
-            rootPreferences = new PreferencesImpl(qpbean);
+            return rootPreferences;
         }
-        return rootPreferences;
     }
 
     private static int getJndiTimeout() {
