@@ -55,11 +55,13 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
 
     protected static final Logger LOG = Logger.getLogger(PreferencesFactoryImpl.class);
 
-    private String beanName = "java:global/dcm4che-jdbc-prefs-ejb-1.0.0/QueryPreferencesBean";
+    private String beanName = 
+            ( System.getProperty("jdbc.prefs.beanName") != null ? System.getProperty("jdbc.prefs.beanName") :"java:global/dcm4che-jdbc-prefs-ejb-1.0.0/QueryPreferencesBean");
 
     @Override
     public Preferences systemRoot() {
         synchronized (this) {
+            LOG.info("Looking up JNDI " + beanName + "...");
             if (rootPreferences == null) {
                 QueryPreferences qpbean = null;
                 int counter = getJndiTimeout();

@@ -53,7 +53,7 @@ import org.dcm4che.jdbc.prefs.entity.Node;
 @Stateless
 public class QueryPreferencesBean implements QueryPreferences {
 
-    @PersistenceContext
+    @PersistenceContext(unitName="dcm4che-jdbc-prefs")
     private EntityManager em;
 
     @Override

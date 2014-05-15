@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dcm4che.jdbc.prefs</groupId>
   <artifactId>dcm4che-jdbc-prefs</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>dcm4che-jdbc-prefs</name>
   <properties>
@@ -12,9 +12,29 @@
     <show_sql>false</show_sql>
     <log4j.version>1.2.16</log4j.version>
     <db>oracle</db>
+    <ds>java:jboss/datasources/DicomPreferencesDS</ds>
+    <dcm4che.version>3.3.4-SNAPSHOT</dcm4che.version>
     <skipTests>true</skipTests>
   </properties>
+
+  <profiles>
+    <profile>
+      <id>asb</id>
+      <properties>
+        <db>oracle-asb</db>
+	<ds>java:jboss/datasources/OracleDS</ds>
+      </properties>
+    </profile>
+  </profiles>
+
   <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>2.4</version>
+      </extension>
+    </extensions>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -49,4 +69,16 @@
     <module>dcm4che-jdbc-prefs-ejb</module>
     <module>dcm4che-jdbc-prefs-tool</module>
   </modules>
+  <distributionManagement>
+    <repository>
+      <id>www.dcm4che.org</id>
+      <name>dcm4che Repository</name>
+      <url>scp://www.dcm4che.org:443/home/maven2</url>
+    </repository>
+  </distributionManagement>
+  <scm>
+    <connection>scm:git:https://github.com/dcm4che/dcm4che-jdbc-prefs.git</connection>
+    <developerConnection>scm:git:https://github.com/dcm4che/dcm4che-jdbc-prefs.git</developerConnection>
+    <url>https://github.com/dcm4che/dcm4che-jdbc-prefs</url>
+  </scm>
 </project>

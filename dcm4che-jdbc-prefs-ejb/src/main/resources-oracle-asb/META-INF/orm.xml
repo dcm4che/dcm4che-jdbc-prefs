@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  version="2.0">
+
+  <entity class="org.dcm4che.jdbc.prefs.entity.Node">
+    <table name="dcm4che_cfg_node" />
+    <sequence-generator name="seq" sequence-name="dcm4che_cfg_node_pks"
+      allocation-size="1" />
+    <attributes>
+      <id name="pk">
+        <column name="pk" />
+        <generated-value strategy="SEQUENCE" generator="seq" />
+      </id>
+    </attributes>
+  </entity>
+
+  <entity class="org.dcm4che.jdbc.prefs.entity.Attribute">
+    <table name="dcm4che_cfg_attribute" />
+    <sequence-generator name="seq" sequence-name="dcm4che_cfg_attribute_pks"
+      allocation-size="1" />
+    <attributes>
+      <id name="pk">
+        <column name="pk" />
+        <generated-value strategy="SEQUENCE" generator="seq" />
+      </id>
+    </attributes>
+  </entity>
+
+</entity-mappings>
