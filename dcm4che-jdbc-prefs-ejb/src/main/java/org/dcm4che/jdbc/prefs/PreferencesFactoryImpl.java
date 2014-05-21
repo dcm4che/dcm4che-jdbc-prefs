@@ -56,7 +56,7 @@ public class PreferencesFactoryImpl implements PreferencesFactory {
     protected static final Logger LOG = Logger.getLogger(PreferencesFactoryImpl.class);
 
     private String beanName = 
-            ( System.getProperty("jdbc.prefs.beanName") != null ? System.getProperty("jdbc.prefs.beanName") :"java:global/dcm4che-jdbc-prefs-ejb-1.0.0/QueryPreferencesBean");
+            ( System.getProperty("jdbc.prefs.beanName") != null ? System.getProperty("jdbc.prefs.beanName") :"java:global/dcm4che-jdbc-prefs-ejb/QueryPreferencesBean");
 
     @Override
     public Preferences systemRoot() {
