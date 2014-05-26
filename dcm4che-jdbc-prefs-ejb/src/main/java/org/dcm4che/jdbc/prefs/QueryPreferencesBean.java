@@ -40,9 +40,12 @@ package org.dcm4che.jdbc.prefs;
 
 import java.util.List;
 
+import javax.ejb.Remove;
+import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 
 import org.dcm4che.jdbc.prefs.entity.Attribute;
 import org.dcm4che.jdbc.prefs.entity.Node;
@@ -94,8 +97,10 @@ public class QueryPreferencesBean implements QueryPreferences {
     }
 
     @Override
-    public void refresh(Node node) {
+    public Node refresh(Node node) {
+        node = em.find(Node.class, node.getPk());
         em.refresh(node);
+        return node;
     }
 
 }

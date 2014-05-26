@@ -43,6 +43,7 @@ import java.util.HashSet;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -85,7 +86,7 @@ public class Node {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Node parentNode;
 
-    @OneToMany(mappedBy = "node")
+    @OneToMany(mappedBy = "node", fetch=FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Collection<Attribute> attributes = new HashSet<Attribute>();
 

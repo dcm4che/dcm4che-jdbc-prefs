@@ -99,7 +99,7 @@ public class PreferencesImpl extends AbstractPreferences {
 
     @Override
     protected AbstractPreferences childSpi(String name) {
-        LOG.debug("childSpi(String) - name = " + name);
+        //LOG.debug("childSpi(String) - name = " + name);
         Node child = childs().get(name);
         if (child == null) {
             LOG.debug("create new Node name=" + name);
@@ -114,19 +114,20 @@ public class PreferencesImpl extends AbstractPreferences {
 
     @Override
     protected String[] childrenNamesSpi() throws BackingStoreException {
-        LOG.debug("childrenNamesSpi() node.pk = " + node.getPk());
+        //LOG.debug("childrenNamesSpi() node.pk = " + node.getPk());
         return childs().keySet().toArray(new String[childs.size()]);
     }
 
     @Override
     protected String getSpi(String key) {
-        LOG.debug("getSpi(String) - key=" + key);
-        return attributes().get(key);
+        String value = attributes().get(key); 
+        //LOG.debug("getSpi(String) node pk="+node.getPk()+", key="+key+", value="+value);
+        return value;
     }
 
     @Override
     protected String[] keysSpi() throws BackingStoreException {
-        LOG.debug("keysSpi()");
+        //LOG.debug("keysSpi()");
         return attributes().keySet().toArray(new String[attributes.size()]);
     }
 
@@ -137,7 +138,7 @@ public class PreferencesImpl extends AbstractPreferences {
 
     @Override
     protected void putSpi(String key, String value) {
-        LOG.debug("putSpi(String, String) - key=" + key + ", value=" + value);
+        //LOG.debug("putSpi(String, String) node pk="+node.getPk()+", key=" + key + ", value=" + value);
         Attribute attr = new Attribute();
         attr.setKey(key);
         attr.setValue(value);
@@ -149,29 +150,29 @@ public class PreferencesImpl extends AbstractPreferences {
 
     @Override
     protected void removeNodeSpi() throws BackingStoreException {
-        LOG.debug("removeNodeSpi() pk = " + node.getPk());
+        //LOG.debug("removeNodeSpi() pk = " + node.getPk());
         queryPreferences.removeNode(node);
         ((PreferencesImpl) parent()).childs().remove(name());
     }
 
     @Override
     protected void removeSpi(String key) {
-        LOG.debug("removeSpi(String) - key = " + key);
+        //LOG.debug("removeSpi(String) - key = " + key);
         queryPreferences.removeAttributeByKey(key, node);
         attributes().remove(key);
     }
 
     @Override
     protected void flushSpi() throws BackingStoreException {
-        LOG.debug("flushSpi()");
+        //LOG.debug("flushSpi()");
         queryPreferences.flush();
     }
 
     @Override
     protected void syncSpi() throws BackingStoreException {
-        LOG.debug("syncSpi()");
+        //LOG.debug("syncSpi(), node pk = "+node.getPk());
         attributes = null;
         childs = null;
-        queryPreferences.refresh(node);
+        node = queryPreferences.refresh(node);
     }
 }

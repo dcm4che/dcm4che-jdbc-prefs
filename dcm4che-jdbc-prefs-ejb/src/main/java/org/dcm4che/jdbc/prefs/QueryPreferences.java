@@ -62,6 +62,6 @@ public interface QueryPreferences {
 
     public abstract void flush();
 
-    public abstract void refresh(Node node);
+    public abstract Node refresh(Node node);
 
 }
