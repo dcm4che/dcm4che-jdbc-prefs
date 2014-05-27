@@ -82,7 +82,7 @@ public class PreferencesImpl extends AbstractPreferences {
         this.queryPreferences = queryPreferences;
         List<Node> results = queryPreferences.getRootNode();
         if (results.isEmpty()) {
-            LOG.debug("PreferencesImpl() - insert new rootNode");
+            //LOG.debug("PreferencesImpl() - insert new rootNode");
             node.setName("rootNode");
             node.setParentNode(null);
             queryPreferences.insertNode(node);
@@ -102,7 +102,7 @@ public class PreferencesImpl extends AbstractPreferences {
         //LOG.debug("childSpi(String) - name = " + name);
         Node child = childs().get(name);
         if (child == null) {
-            LOG.debug("create new Node name=" + name);
+            //LOG.debug("create new Node name=" + name);
             child = new Node();
             child.setName(name);
             child.setParentNode(node);
@@ -173,6 +173,8 @@ public class PreferencesImpl extends AbstractPreferences {
         //LOG.debug("syncSpi(), node pk = "+node.getPk());
         attributes = null;
         childs = null;
-        node = queryPreferences.refresh(node);
+        Node updatedNode = queryPreferences.refresh(node);
+        //if node was deleted - call remove, otherwise replace the node object 
+        if (updatedNode == null) removeNode(); else node = updatedNode;
     }
 }

@@ -67,7 +67,8 @@ public class QueryPreferencesBean implements QueryPreferences {
     @Override
     public void removeNode(Node node) {
         node = em.find(Node.class, node.getPk());
-        em.remove(node);
+        // if the node was 'deleted' already - do nothing
+        if (node != null) em.remove(node);
     }
 
     @Override
@@ -99,7 +100,6 @@ public class QueryPreferencesBean implements QueryPreferences {
     @Override
     public Node refresh(Node node) {
         node = em.find(Node.class, node.getPk());
-        em.refresh(node);
         return node;
     }
 
