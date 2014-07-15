@@ -6,7 +6,7 @@ rem -------------------------------------------------------------------------
 if not "%ECHO%" == ""  echo %ECHO%
 if "%OS%" == "Windows_NT"  setlocal
 
-set MAIN_CLASS=org.dcm4che.jdbc.prefs.xmlprefs2jdbc.XmlPrefs2Jdbc
+IF NOT DEFINED MAIN_CLASS set MAIN_CLASS=org.dcm4che.jdbc.prefs.xmlprefs2jdbc.XmlPrefs2Jdbc
 set MAIN_JAR=dcm4che-jdbc-prefs-tool-${project.version}.jar
 
 set DIRNAME=.\
@@ -55,6 +55,7 @@ set CP=%CP%;%DCM4CHE_HOME%\lib\hibernate-commons-annotations-4.0.1.Final.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\javassist-3.15.0-GA.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\commons-collections-3.2.1.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\antlr-2.7.7.jar
+set CP=%CP%;%DCM4CHE_HOME%\lib\dcm4che-tool-prefs2xml-${dcm4che.version}.jar
 
 REM jdbc driver
 set CP=%CP%;%DCM4CHE_HOME%\lib\ojdbc6.jar

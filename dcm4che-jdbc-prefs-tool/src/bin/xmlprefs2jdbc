@@ -3,7 +3,11 @@
 # xmlPrefs2jdbc  Launcher
 # -------------------------------------------------------------------------
 
-MAIN_CLASS=org.dcm4che.jdbc.prefs.xmlprefs2jdbc.XmlPrefs2Jdbc
+# Check if the class has not yet been set (it could be set by jdbcprefs2xml tool)
+if [ -z "${MAIN_CLASS-}" ]; then
+  MAIN_CLASS=org.dcm4che.jdbc.prefs.xmlprefs2jdbc.XmlPrefs2Jdbc
+fi
+
 MAIN_JAR=dcm4che-jdbc-prefs-tool-${project.version}.jar
 
 DIRNAME="`dirname "$0"`"
@@ -53,6 +57,7 @@ CP="$CP:$DCM4CHE_HOME/lib/hibernate-commons-annotations-4.0.1.Final.jar"
 CP="$CP:$DCM4CHE_HOME/lib/javassist-3.15.0-GA.jar"
 CP="$CP:$DCM4CHE_HOME/lib/commons-collections-3.2.1.jar"
 CP="$CP:$DCM4CHE_HOME/lib/antlr-2.7.7.jar"
+CP="$CP:$DCM4CHE_HOME/lib/dcm4che-tool-prefs2xml-${dcm4che.version}.jar"
 
 # JDCB Driver
 CP="$CP:$DCM4CHE_HOME/lib/ojdbc6.jar"

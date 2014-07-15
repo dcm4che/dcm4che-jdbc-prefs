@@ -11,6 +11,7 @@
       <directory>src</directory>
       <includes>
         <include>bin/xmlprefs2jdbc</include>
+        <include>bin/jdbcprefs2xml</include>
       </includes>
       <filtered>true</filtered>
       <outputDirectory>.</outputDirectory>
@@ -21,7 +22,9 @@
       <directory>src</directory>
       <includes>
         <include>bin/xmlprefs2jdbc.bat</include>
+        <include>bin/jdbcprefs2xml.bat</include>
       </includes>
+      <filtered>true</filtered>
       <outputDirectory>.</outputDirectory>
       <lineEnding>dos</lineEnding>
     </fileSet>
