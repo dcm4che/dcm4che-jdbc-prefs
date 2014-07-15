@@ -41,7 +41,7 @@ else
 fi
 
 # Setup the classpath
-CP="$DCM4CHE_HOME/etc/"
+CP="$DCM4CHE_HOME/etc/xmlprefs2jdbc"
 CP="$CP:$DCM4CHE_HOME/lib/$MAIN_JAR"
 CP="$CP:$DCM4CHE_HOME/lib/slf4j-api-1.6.4.jar"
 CP="$CP:$DCM4CHE_HOME/lib/slf4j-log4j12-1.6.4.jar"

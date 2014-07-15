@@ -41,6 +41,7 @@ set JAVA=%JAVA_HOME%\bin\java
 :SKIP_SET_JAVA_HOME
 
 set CP=%DCM4CHE_HOME%\lib\%MAIN_JAR%
+set CP=%CP%;%DCM4CHE_HOME%\etc\xmlprefs2jdbc
 set CP=%CP%;%DCM4CHE_HOME%\lib\slf4j-api-1.6.4.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\slf4j-log4j12-1.6.4.jar
 set CP=%CP%;%DCM4CHE_HOME%\lib\log4j-1.2.16.jar
