@@ -4,5 +4,5 @@
 # -------------------------------------------------------------------------
 
 MAIN_CLASS=org.dcm4che.jdbc.prefs.xmlprefs2jdbc.JdbcPrefs2Xml
-
+export MAIN_CLASS
 $(dirname "$0")/xmlprefs2jdbc "$@"
