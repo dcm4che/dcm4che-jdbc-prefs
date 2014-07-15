@@ -29,12 +29,12 @@
       <lineEnding>dos</lineEnding>
     </fileSet>
     <fileSet>
-      <directory>src/etc/</directory>
+      <directory>src/etc/xmlprefs2jdbc/</directory>
       <includes>
         <include>*</include>
       </includes>
       <fileMode>0644</fileMode>
-      <outputDirectory>etc</outputDirectory>
+      <outputDirectory>etc/xmlprefs2jdbc/</outputDirectory>
     </fileSet>
   </fileSets>
   <dependencySets>
