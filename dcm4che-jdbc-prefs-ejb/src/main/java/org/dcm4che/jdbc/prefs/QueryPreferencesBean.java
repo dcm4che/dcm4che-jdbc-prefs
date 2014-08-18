@@ -40,9 +40,7 @@ package org.dcm4che.jdbc.prefs;
 
 import java.util.List;
 
-import javax.ejb.Remove;
-import javax.ejb.Stateful;
-import javax.ejb.Stateless;
+import javax.ejb.*;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
@@ -82,11 +80,21 @@ public class QueryPreferencesBean implements QueryPreferences {
                 .setParameter("nodePK", node.getPk()).executeUpdate();
     }
 
+    /**
+     * Transaction disabled to avoid problems with multiple non-xa datasources (<a href="http://blogs.adobe.com/livecycle/2011/06/javax-ejb-transactionrolledbacklocalexception-could-not-enlist-in-transaction-on-entering-meta-aware-object-error-seen-in-jboss-server-log.html">multiple non xa ds issue</a>) and to speed up reading
+     */
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override
     public List<Node> getRootNode() {
         return em.createNamedQuery(Node.GET_ROOT_NODE, Node.class).getResultList();
     }
 
+    /**
+     * See getRootNode
+     * @param parent
+     * @return
+     */
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     @Override
     public List<Node> getChildren(Node parent) {
         return em.createNamedQuery(Node.GET_CHILDREN, Node.class).setParameter(1, parent).getResultList();
