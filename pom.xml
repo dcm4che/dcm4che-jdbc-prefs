@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dcm4che.jdbc.prefs</groupId>
   <artifactId>dcm4che-jdbc-prefs</artifactId>
-  <version>1.1.0-SNAPSHOT</version>
+  <version>1.1.0</version>
   <packaging>pom</packaging>
   <name>dcm4che-jdbc-prefs</name>
   <properties>
@@ -80,5 +80,6 @@
     <connection>scm:git:https://github.com/dcm4che/dcm4che-jdbc-prefs.git</connection>
     <developerConnection>scm:git:https://github.com/dcm4che/dcm4che-jdbc-prefs.git</developerConnection>
     <url>https://github.com/dcm4che/dcm4che-jdbc-prefs</url>
+    <tag>1.1.0</tag>
   </scm>
 </project>
