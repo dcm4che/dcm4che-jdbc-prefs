@@ -13,7 +13,7 @@
     <log4j.version>1.2.16</log4j.version>
     <db>oracle</db>
     <ds>java:jboss/datasources/DicomPreferencesDS</ds>
-    <dcm4che.version>3.3.4-SNAPSHOT</dcm4che.version>
+    <dcm4che.version>3.3.4</dcm4che.version>
     <skipTests>true</skipTests>
   </properties>
 
