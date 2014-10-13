@@ -74,7 +74,7 @@ public class Attribute {
     @Index(name = "attribute_key_idx")
     private String key;
 
-    @Basic(optional = false)
+    @Basic
     @Column(length = 4000, name = "attr_value")
     private String value;
 

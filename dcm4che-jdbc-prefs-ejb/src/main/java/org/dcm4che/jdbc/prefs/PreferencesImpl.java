@@ -62,8 +62,11 @@ public class PreferencesImpl extends AbstractPreferences {
     private HashMap<String, String> attributes() {
         if (attributes == null) {
             attributes = new HashMap<String, String>();
-            for (Attribute attr : node.getAttributes())
-                attributes.put(attr.getKey(), attr.getValue());
+            for (Attribute attr : node.getAttributes()) {
+                // To protect from Oracle that treats empty strings as nulls
+                String value = attr.getValue() == null ? "" : attr.getValue();
+                attributes.put(attr.getKey(), value);
+            }
         }
         return attributes;
     }
